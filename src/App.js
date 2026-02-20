@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import LibraryPage from './pages/LibraryPage';
 import AboutPage from './pages/AboutPage';
+import BookDetailPage from './pages/BookDetailPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/library" element={<LibraryPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/book/:id" element={<BookDetailPage />} />
           </Routes>
         </main>
         <Footer />
