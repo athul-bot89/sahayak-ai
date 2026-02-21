@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const LibraryPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -172,9 +174,9 @@ const LibraryPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold mb-4">Digital Library</h1>
+              <h1 className="text-4xl font-bold mb-4">{t('library.title')}</h1>
               <p className="text-lg">
-                Browse and explore our collection of {books.length} textbooks and resources
+                {t('library.subtitle')}
               </p>
             </div>
             <button
@@ -196,7 +198,7 @@ const LibraryPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               type="text"
-              placeholder="Search by title, author, or filename..."
+              placeholder={t('library.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

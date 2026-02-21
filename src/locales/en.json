@@ -1,0 +1,104 @@
+{
+  "header": {
+    "title": "SAHAYAK AI",
+    "home": "Home",
+    "library": "Library",
+    "about": "About"
+  },
+  "hero": {
+    "title": "Welcome to SAHAYAK AI",
+    "subtitle": "Your Intelligent Learning Assistant",
+    "description": "Explore our vast collection of textbooks and educational resources powered by advanced AI technology",
+    "selectLanguage": "Select Your Language",
+    "exploreButton": "Explore Library",
+    "learnMoreButton": "Learn More"
+  },
+  "features": {
+    "title": "Key Features",
+    "aiPowered": {
+      "title": "AI-Powered",
+      "description": "Advanced artificial intelligence to enhance your learning experience"
+    },
+    "vastLibrary": {
+      "title": "Vast Library",
+      "description": "Access thousands of textbooks and educational materials"
+    },
+    "interactive": {
+      "title": "Interactive Learning",
+      "description": "Engage with content through interactive features and tools"
+    },
+    "personalized": {
+      "title": "Personalized Experience",
+      "description": "Tailored recommendations based on your learning preferences"
+    }
+  },
+  "library": {
+    "title": "Textbook Library",
+    "subtitle": "Browse our collection of educational resources",
+    "searchPlaceholder": "Search by title or author...",
+    "noBooks": "No books available at the moment.",
+    "author": "Author",
+    "pages": "pages",
+    "viewDetails": "View Details"
+  },
+  "bookDetail": {
+    "backToLibrary": "Back to Library",
+    "bookInfo": "Book Information",
+    "title": "Title",
+    "author": "Author",
+    "originalFilename": "Original Filename",
+    "totalPages": "Total Pages",
+    "uploadedDate": "Uploaded Date",
+    "tocPages": "TOC Pages",
+    "chapterCount": "Chapter Count",
+    "tocExtracted": "TOC Extracted",
+    "yes": "Yes",
+    "no": "No",
+    "downloadPdf": "Download PDF",
+    "readOnline": "Read Online",
+    "viewToc": "View Table of Contents",
+    "loading": "Loading book details...",
+    "error": "Error",
+    "notFound": "Book not found"
+  },
+  "about": {
+    "title": "About SAHAYAK AI",
+    "subtitle": "Empowering Education with Artificial Intelligence",
+    "description": "SAHAYAK AI is a cutting-edge educational platform that leverages the power of artificial intelligence to transform the way students learn and educators teach. Our mission is to make quality education accessible, engaging, and personalized for everyone.",
+    "ourMission": {
+      "title": "Our Mission",
+      "description": "To democratize education by providing intelligent, accessible, and personalized learning experiences to students worldwide."
+    },
+    "whatWeOffer": {
+      "title": "What We Offer",
+      "item1": "Comprehensive digital library with thousands of textbooks",
+      "item2": "AI-powered content analysis and summarization",
+      "item3": "Interactive learning tools and assessments",
+      "item4": "Personalized learning recommendations",
+      "item5": "Multi-language support for diverse learners"
+    },
+    "whyChooseUs": {
+      "title": "Why Choose SAHAYAK AI?",
+      "aiTechnology": {
+        "title": "Advanced AI Technology",
+        "description": "Our platform uses state-of-the-art artificial intelligence to enhance learning outcomes."
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "description": "Access educational content anytime, anywhere, on any device."
+      },
+      "personalization": {
+        "title": "Personalization",
+        "description": "Get recommendations tailored to your learning style and preferences."
+      },
+      "community": {
+        "title": "Community",
+        "description": "Join a growing community of learners and educators."
+      }
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "tagline": "Empowering Education with AI"
+  }
+}

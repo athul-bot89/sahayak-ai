@@ -1,15 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-gray-800 text-white mt-auto">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">About Sahayak AI</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('header.title')}</h3>
             <p className="text-gray-400">
-              Your trusted AI companion for learning and productivity. 
-              Empowering users with intelligent solutions.
+              {t('footer.tagline')}
             </p>
           </div>
           

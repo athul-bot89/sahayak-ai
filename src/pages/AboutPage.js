@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AboutPage = () => {
+  const { t } = useTranslation();
   const teamMembers = [
     {
       id: 1,
@@ -60,10 +62,9 @@ const AboutPage = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">About Sahayak AI</h1>
+          <h1 className="text-5xl font-bold mb-4">{t('about.title')}</h1>
           <p className="text-xl max-w-3xl mx-auto">
-            Pioneering the future of artificial intelligence to empower businesses 
-            and individuals worldwide
+            {t('about.subtitle')}
           </p>
         </div>
       </div>
@@ -72,18 +73,12 @@ const AboutPage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-8 text-gray-800">Our Mission</h2>
+            <h2 className="text-3xl font-bold mb-8 text-gray-800">{t('about.ourMission.title')}</h2>
             <p className="text-lg text-gray-600 mb-6">
-              At Sahayak AI, we're committed to democratizing artificial intelligence 
-              and making it accessible to everyone. Our mission is to develop innovative 
-              AI solutions that solve real-world problems and enhance human capabilities, 
-              not replace them.
+              {t('about.description')}
             </p>
             <p className="text-lg text-gray-600">
-              We believe in the transformative power of AI when guided by ethical 
-              principles and human-centered design. Our goal is to create technology 
-              that augments human intelligence and creativity, fostering a future where 
-              AI and humans work together harmoniously.
+              {t('about.ourMission.description')}
             </p>
           </div>
         </div>
