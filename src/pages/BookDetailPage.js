@@ -17,6 +17,7 @@ const BookDetailPage = () => {
   const [error, setError] = useState(null);
   const [showTocMode, setShowTocMode] = useState(false);
   const [tocSaved, setTocSaved] = useState(false);
+  const [navigateToPage, setNavigateToPage] = useState(null);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -147,6 +148,8 @@ const BookDetailPage = () => {
                     embedded={true}
                     onClose={() => {}}
                     startInTocMode={showTocMode}
+                    navigateToPage={navigateToPage}
+                    onPageNavigated={() => setNavigateToPage(null)}
                     onTocSaved={() => {
                       setTocSaved(true);
                       setShowTocMode(false);
@@ -286,7 +289,14 @@ const BookDetailPage = () => {
                   </button>
                 ) : (
                   <>
-                    <button className="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center text-sm font-medium">
+                    <button 
+                      onClick={() => {
+                        // Navigate to the TOC start page in the PDF viewer
+                        if (book.toc_start_page) {
+                          setNavigateToPage(book.toc_start_page);
+                        }
+                      }}
+                      className="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center text-sm font-medium">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                       </svg>

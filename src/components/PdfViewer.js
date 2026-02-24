@@ -8,7 +8,7 @@ import './PdfViewer.css';
 // Configure PDF.js worker
 configurePdfWorker();
 
-const PdfViewer = ({ textbookId, totalPages, onClose, embedded = false, startInTocMode = false, onTocSaved }) => {
+const PdfViewer = ({ textbookId, totalPages, onClose, embedded = false, startInTocMode = false, onTocSaved, navigateToPage, onPageNavigated }) => {
   const [numPages, setNumPages] = useState(totalPages);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(embedded ? 0.8 : 1.0);
@@ -105,6 +105,48 @@ const PdfViewer = ({ textbookId, totalPages, onClose, embedded = false, startInT
       setSelectedPages([]);
     }
   }, [startInTocMode, tocMode]);
+  
+  // Handle external page navigation
+  useEffect(() => {
+    if (navigateToPage && navigateToPage > 0 && navigateToPage <= totalPages) {
+      // Ensure the page is loaded first
+      if (!loadedPages.has(navigateToPage)) {
+        // Load a range around the target page
+        const startPage = Math.max(1, navigateToPage - 2);
+        const endPage = Math.min(totalPages, navigateToPage + 2);
+        loadPageRange(startPage, endPage).then(() => {
+          setCurrentPage(navigateToPage);
+          
+          // If in continuous mode, scroll to the page
+          if (viewMode === 'continuous') {
+            setTimeout(() => {
+              const pageElement = document.querySelector(`#page-${navigateToPage}`);
+              if (pageElement) {
+                pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 200); // Small delay to ensure page is rendered
+          }
+        });
+      } else {
+        setCurrentPage(navigateToPage);
+        
+        // If in continuous mode, scroll to the page
+        if (viewMode === 'continuous') {
+          setTimeout(() => {
+            const pageElement = document.querySelector(`#page-${navigateToPage}`);
+            if (pageElement) {
+              pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 100); // Small delay to ensure page is rendered
+        }
+      }
+      
+      // Notify parent that navigation is complete
+      if (onPageNavigated) {
+        onPageNavigated();
+      }
+    }
+  }, [navigateToPage, totalPages, viewMode, onPageNavigated, loadedPages, loadPageRange]);
   
   // Track current page when scrolling in continuous mode
   useEffect(() => {
