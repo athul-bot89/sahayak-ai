@@ -97,6 +97,22 @@
       }
     }
   },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter"
+  },
   "footer": {
     "rights": "All rights reserved.",
     "tagline": "Empowering Education with AI"

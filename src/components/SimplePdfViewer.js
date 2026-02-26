@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
+const SimplePdfViewer = ({ 
+  textbookId, 
+  totalPages, 
+  onClose, 
+  selectionMode = false,
+  initialStartPage = 1,
+  initialEndPage = 1,
+  onPageRangeSelect 
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.0);
   const [loading, setLoading] = useState(false);
@@ -8,6 +16,8 @@ const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
   const [viewMode] = useState('iframe'); // 'iframe' or 'image'
   const [selectedPages, setSelectedPages] = useState([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [rangeStartPage, setRangeStartPage] = useState(initialStartPage);
+  const [rangeEndPage, setRangeEndPage] = useState(initialEndPage);
 
   // API base URL
   const API_BASE = 'http://localhost:8000/api/v1';
@@ -125,6 +135,20 @@ const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
     setScale(1.0);
   };
 
+  // Initialize for page range selection mode
+  useEffect(() => {
+    if (selectionMode) {
+      setCurrentPage(rangeStartPage);
+    }
+  }, [selectionMode, rangeStartPage]);
+
+  // Handle page range confirmation
+  const handleConfirmPageRange = () => {
+    if (onPageRangeSelect) {
+      onPageRangeSelect(rangeStartPage, rangeEndPage);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col">
       {/* Header Toolbar */}
@@ -141,8 +165,8 @@ const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
             </svg>
           </button>
 
-          {/* Page navigation (for page selection mode) */}
-          {isSelectionMode && (
+          {/* Page navigation */}
+          {(isSelectionMode || selectionMode) && (
             <div className="flex items-center space-x-2">
               <button
                 onClick={goToPrevPage}
@@ -215,16 +239,69 @@ const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-3">
-          {/* Selection mode toggle */}
-          <button
-            onClick={() => {
-              setIsSelectionMode(!isSelectionMode);
-              setSelectedPages([]);
-            }}
-            className={`px-3 py-1 rounded ${isSelectionMode ? 'bg-green-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-          >
-            {isSelectionMode ? 'Exit Selection' : 'Select Pages'}
-          </button>
+          {/* Page Range Selection for Chapter Editing */}
+          {selectionMode && (
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm">Start:</span>
+                <input
+                  type="number"
+                  value={rangeStartPage}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 1;
+                    if (val >= 1 && val <= totalPages) {
+                      setRangeStartPage(val);
+                      if (val > rangeEndPage) {
+                        setRangeEndPage(val);
+                      }
+                      setCurrentPage(val);
+                    }
+                  }}
+                  className="w-16 px-2 py-1 text-center bg-gray-700 rounded text-white"
+                  min="1"
+                  max={totalPages}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm">End:</span>
+                <input
+                  type="number"
+                  value={rangeEndPage}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || rangeStartPage;
+                    if (val >= rangeStartPage && val <= totalPages) {
+                      setRangeEndPage(val);
+                    }
+                  }}
+                  className="w-16 px-2 py-1 text-center bg-gray-700 rounded text-white"
+                  min={rangeStartPage}
+                  max={totalPages}
+                />
+              </div>
+              <span className="text-sm text-gray-300">
+                ({rangeEndPage - rangeStartPage + 1} pages)
+              </span>
+              <button
+                onClick={handleConfirmPageRange}
+                className="px-4 py-1 bg-green-600 hover:bg-green-700 rounded text-white font-medium"
+              >
+                Confirm Selection
+              </button>
+            </div>
+          )}
+
+          {/* Selection mode toggle - only show if not in chapter edit mode */}
+          {!selectionMode && (
+            <button
+              onClick={() => {
+                setIsSelectionMode(!isSelectionMode);
+                setSelectedPages([]);
+              }}
+              className={`px-3 py-1 rounded ${isSelectionMode ? 'bg-green-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+            >
+              {isSelectionMode ? 'Exit Selection' : 'Select Pages'}
+            </button>
+          )}
 
           {isSelectionMode && selectedPages.length > 0 && (
             <span className="text-sm">{selectedPages.length} pages selected</span>
@@ -277,7 +354,78 @@ const SimplePdfViewer = ({ textbookId, totalPages, onClose }) => {
         )}
 
         {/* Main PDF Display */}
-        {!isSelectionMode ? (
+        {selectionMode ? (
+          // Chapter Page Range Selection Mode
+          <div className="h-full w-full flex flex-col items-center justify-center p-4">
+            <div className="bg-white rounded-lg p-6 max-w-5xl w-full">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800">Select Chapter Pages</h3>
+              <p className="text-gray-600 mb-6">
+                Use the navigation buttons or input fields to adjust the start and end pages for this chapter.
+                The PDF preview will help you identify the correct pages.
+              </p>
+              
+              {/* Visual Page Range Indicator */}
+              <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
+                <div className="text-center">
+                  <p className="text-lg font-semibold text-blue-900 mb-2">
+                    Current Selection: Pages {rangeStartPage} - {rangeEndPage}
+                  </p>
+                  <p className="text-blue-700">
+                    Total: {rangeEndPage - rangeStartPage + 1} pages
+                  </p>
+                  {currentPage >= rangeStartPage && currentPage <= rangeEndPage && (
+                    <p className="text-sm text-blue-600 mt-2">
+                      Currently viewing page {currentPage} (within selected range)
+                    </p>
+                  )}
+                  {(currentPage < rangeStartPage || currentPage > rangeEndPage) && (
+                    <p className="text-sm text-orange-600 mt-2">
+                      Currently viewing page {currentPage} (outside selected range)
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* PDF Preview Frame */}
+              <div className="relative" style={{ height: '500px' }}>
+                <iframe
+                  src={`${getPdfUrl()}#page=${currentPage}`}
+                  className="w-full h-full bg-white rounded shadow-lg border-2 border-gray-300"
+                  style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}
+                  title="PDF Preview for Page Selection"
+                />
+                
+                {/* Overlay indicators for start/end pages */}
+                {currentPage === rangeStartPage && (
+                  <div className="absolute top-2 left-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    Start Page
+                  </div>
+                )}
+                {currentPage === rangeEndPage && (
+                  <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    End Page
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Jump Buttons */}
+              <div className="mt-4 flex justify-center space-x-4">
+                <button
+                  onClick={() => setCurrentPage(rangeStartPage)}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                  Jump to Start Page
+                </button>
+                <button
+                  onClick={() => setCurrentPage(rangeEndPage)}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  Jump to End Page
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : !isSelectionMode ? (
           // Regular viewing mode using iframe
           <div className="h-full w-full flex items-center justify-center p-4">
             <iframe

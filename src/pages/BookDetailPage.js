@@ -1,6 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ChaptersSection from '../components/ChaptersSection';
+import ProcessingNotification from '../components/ProcessingNotification';
 
 // Lazy load PDF viewers to avoid issues if react-pdf fails
 const PdfViewer = lazy(() => import('../components/PdfViewer').catch(() => {
@@ -18,6 +20,10 @@ const BookDetailPage = () => {
   const [showTocMode, setShowTocMode] = useState(false);
   const [tocSaved, setTocSaved] = useState(false);
   const [navigateToPage, setNavigateToPage] = useState(null);
+  const [processingChapters, setProcessingChapters] = useState(false);
+  const [chapterError, setChapterError] = useState(null);
+  const [processingStep, setProcessingStep] = useState('');
+  const [processingDetails, setProcessingDetails] = useState([]);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -59,6 +65,102 @@ const BookDetailPage = () => {
       month: 'long', 
       day: 'numeric' 
     });
+  };
+
+  // Process TOC: Extract text, detect chapters, and create them
+  const processTocAndCreateChapters = async (textbookId) => {
+    try {
+      console.log('Starting TOC processing for textbook:', textbookId);
+      setProcessingDetails([]);
+      
+      // Step 1: Get TOC text
+      setProcessingStep('Extracting Table of Contents text...');
+      const tocResponse = await fetch(
+        `http://localhost:8000/api/v1/extract/textbook/${textbookId}/toc`,
+        {
+          headers: {
+            'accept': 'application/json'
+          }
+        }
+      );
+
+      if (!tocResponse.ok) {
+        throw new Error('Failed to extract TOC text');
+      }
+
+      const tocData = await tocResponse.json();
+      const tocText = tocData.extracted_text;
+      
+      if (!tocText) {
+        throw new Error('No TOC text extracted');
+      }
+
+      setProcessingDetails(prev => [...prev, `✓ TOC text extracted (${tocData.page_count} pages)`]);
+      console.log('TOC text extracted successfully');
+
+      // Step 2: Detect chapters from TOC text
+      setProcessingStep('Analyzing TOC to detect chapters...');
+      const detectResponse = await fetch(
+        'http://localhost:8000/api/v1/chapters/detect',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: JSON.stringify({
+            textbook_id: parseInt(textbookId),
+            toc_text: tocText
+          })
+        }
+      );
+
+      if (!detectResponse.ok) {
+        throw new Error('Failed to detect chapters');
+      }
+
+      const detectedData = await detectResponse.json();
+      const detectedChapters = detectedData.chapters;
+      
+      if (!detectedChapters || detectedChapters.length === 0) {
+        throw new Error('No chapters detected');
+      }
+
+      setProcessingDetails(prev => [...prev, `✓ Detected ${detectedChapters.length} chapters`]);
+      console.log('Detected chapters:', detectedChapters);
+
+      // Step 3: Create chapters in batch
+      setProcessingStep('Creating chapters and extracting content...');
+      const createResponse = await fetch(
+        'http://localhost:8000/api/v1/chapters/batch',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: JSON.stringify({
+            textbook_id: parseInt(textbookId),
+            chapters: detectedChapters
+          })
+        }
+      );
+
+      if (!createResponse.ok) {
+        throw new Error('Failed to create chapters');
+      }
+
+      const createdData = await createResponse.json();
+      setProcessingDetails(prev => [...prev, `✓ Created ${createdData.created_count} chapters successfully`]);
+      setProcessingStep('Chapters created successfully!');
+      console.log('Chapters created successfully:', createdData);
+      
+      return createdData;
+    } catch (error) {
+      console.error('Error processing TOC and creating chapters:', error);
+      setProcessingStep('');
+      throw error;
+    }
   };
 
   if (loading) {
@@ -150,16 +252,35 @@ const BookDetailPage = () => {
                     startInTocMode={showTocMode}
                     navigateToPage={navigateToPage}
                     onPageNavigated={() => setNavigateToPage(null)}
-                    onTocSaved={() => {
+                    onTocSaved={async () => {
                       setTocSaved(true);
                       setShowTocMode(false);
-                      // Refresh book data to get updated TOC info
-                      fetch(`http://localhost:8000/api/v1/textbooks/${id}`, {
-                        headers: { 'accept': 'application/json' }
-                      })
-                      .then(res => res.json())
-                      .then(data => setBook(data))
-                      .catch(err => console.error('Failed to refresh book data:', err));
+                      
+                      try {
+                        // Process TOC and create chapters automatically
+                        console.log('TOC saved, processing chapters...');
+                        await processTocAndCreateChapters(id);
+                        
+                        // Refresh book data to get updated TOC info and chapter count
+                        const response = await fetch(`http://localhost:8000/api/v1/textbooks/${id}`, {
+                          headers: { 'accept': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                          const data = await response.json();
+                          setBook(data);
+                          console.log('Book data refreshed with chapters');
+                        }
+                      } catch (err) {
+                        console.error('Error processing TOC:', err);
+                        // Still refresh book data even if chapter creation fails
+                        fetch(`http://localhost:8000/api/v1/textbooks/${id}`, {
+                          headers: { 'accept': 'application/json' }
+                        })
+                        .then(res => res.json())
+                        .then(data => setBook(data))
+                        .catch(error => console.error('Failed to refresh book data:', error));
+                      }
                     }}
                   />
                 </Suspense>
@@ -242,11 +363,37 @@ const BookDetailPage = () => {
                 </div>
               </div>
 
+              {/* Processing Notification */}
+              {processingChapters && (
+                <ProcessingNotification
+                  status="Processing Table of Contents"
+                  message={processingStep}
+                  details={processingDetails}
+                  type="info"
+                />
+              )}
+
               {/* Success Message */}
-              {tocSaved && (
-                <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
-                  ✓ Table of Contents has been successfully set and extracted!
-                </div>
+              {tocSaved && !processingChapters && !chapterError && (
+                <ProcessingNotification
+                  status="Success!"
+                  message="Table of Contents has been successfully set and chapters have been created."
+                  details={processingDetails.length > 0 ? processingDetails : undefined}
+                  type="success"
+                />
+              )}
+
+              {/* Error Message */}
+              {chapterError && (
+                <ProcessingNotification
+                  status="Partial Success"
+                  message={`TOC saved but chapter creation encountered an issue: ${chapterError}`}
+                  details={[
+                    'The Table of Contents has been saved successfully.',
+                    'You can try creating chapters manually or contact support if the issue persists.'
+                  ]}
+                  type="warning"
+                />
               )}
 
               {/* Action Buttons */}
@@ -307,6 +454,78 @@ const BookDetailPage = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Processing Notification for Chapters */}
+        {processingChapters && (
+          <ProcessingNotification
+            title="Processing Chapters"
+            step={processingStep}
+            details={processingDetails}
+            onClose={() => setProcessingChapters(false)}
+          />
+        )}
+        
+        {/* Chapter Error Alert */}
+        {chapterError && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-300 rounded-lg">
+            <div className="flex items-center">
+              <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p className="text-red-700">{chapterError}</p>
+              <button
+                onClick={() => setChapterError(null)}
+                className="ml-auto text-red-600 hover:text-red-800"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Chapters Section */}
+        <div className="mt-8">
+          <ChaptersSection 
+            textbookId={id} 
+            book={book}
+            onChapterClick={async (chapter) => {
+              // Handle special actions
+              if (chapter?.action === 'process_chapters') {
+                try {
+                  setProcessingChapters(true);
+                  setChapterError(null);
+                  console.log('Manually triggering chapter processing...');
+                  
+                  await processTocAndCreateChapters(id);
+                  
+                  // Refresh book data
+                  const response = await fetch(`http://localhost:8000/api/v1/textbooks/${id}`, {
+                    headers: { 'accept': 'application/json' }
+                  });
+                  
+                  if (response.ok) {
+                    const data = await response.json();
+                    setBook(data);
+                    console.log('Book data refreshed after manual chapter processing');
+                  }
+                } catch (err) {
+                  console.error('Error processing chapters:', err);
+                  setChapterError('Failed to process chapters: ' + err.message);
+                } finally {
+                  setProcessingChapters(false);
+                }
+                return;
+              }
+              
+              // Normal chapter click - Navigate to the chapter's start page in the PDF viewer
+              if (chapter?.start_page) {
+                setNavigateToPage(chapter.start_page);
+              }
+            }}
+          />
         </div>
       </div>
     </div>
