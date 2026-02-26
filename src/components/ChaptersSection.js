@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SimplePdfViewer from './SimplePdfViewer';
+import { jsPDF } from 'jspdf';
 
 const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const { t } = useTranslation();
@@ -38,6 +39,19 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [chatError, setChatError] = useState(null);
   const [includeContext, setIncludeContext] = useState(true);
+
+  // Study Schedule state management
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleChapters, setScheduleChapters] = useState([]);
+  const [scheduleSettings, setScheduleSettings] = useState({
+    study_hours_per_day: 2.0,
+    include_weekends: true,
+    break_days: []
+  });
+  const [generatingSchedule, setGeneratingSchedule] = useState(false);
+  const [scheduleResult, setScheduleResult] = useState(null);
+  const [showScheduleResult, setShowScheduleResult] = useState(false);
+  const [scheduleError, setScheduleError] = useState(null);
 
   useEffect(() => {
     // Fetch chapters when component mounts or textbook changes
@@ -597,6 +611,293 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
     } finally {
       setUpdateLoading(false);
     }
+  };
+
+  // Download schedule function
+  const downloadSchedule = (format = 'json') => {
+    if (!scheduleResult) return;
+
+    const fileName = `study_schedule_${book?.title || 'textbook'}_${new Date().toISOString().split('T')[0]}`;
+    
+    if (format === 'json') {
+      // Download as JSON
+      const dataStr = JSON.stringify(scheduleResult, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `${fileName}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    } else if (format === 'pdf') {
+      // Download as PDF
+      const doc = new jsPDF();
+      const pageHeight = doc.internal.pageSize.height;
+      const pageWidth = doc.internal.pageSize.width;
+      let yPosition = 20;
+      const lineHeight = 7;
+      const margin = 15;
+      const maxWidth = pageWidth - (margin * 2);
+
+      // Helper function to add text and handle page breaks
+      const addText = (text, fontSize = 12, isBold = false) => {
+        doc.setFontSize(fontSize);
+        if (isBold) {
+          doc.setFont(undefined, 'bold');
+        } else {
+          doc.setFont(undefined, 'normal');
+        }
+        
+        // Split text to fit width
+        const lines = doc.splitTextToSize(text, maxWidth);
+        
+        for (const line of lines) {
+          if (yPosition + lineHeight > pageHeight - 20) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          doc.text(line, margin, yPosition);
+          yPosition += lineHeight;
+        }
+      };
+
+      // Title
+      doc.setFontSize(20);
+      doc.setFont(undefined, 'bold');
+      doc.text('Study Schedule', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 10;
+
+      // Book and date
+      addText(`Book: ${book?.title || 'Textbook'}`, 14);
+      addText(`Generated: ${new Date().toLocaleDateString()}`, 12);
+      yPosition += 5;
+
+      // Draw a line
+      doc.setDrawColor(200, 200, 200);
+      doc.line(margin, yPosition, pageWidth - margin, yPosition);
+      yPosition += 10;
+
+      // Overview Section
+      addText('OVERVIEW', 16, true);
+      yPosition += 5;
+      addText(`Total Chapters: ${scheduleResult.total_chapters}`, 12);
+      addText(`Total Study Days: ${scheduleResult.schedule?.reduce((sum, ch) => sum + (ch.estimated_study_days || 0), 0) || 0}`, 12);
+      addText(`Daily Study Hours: ${scheduleResult.schedule?.[0]?.daily_hours || 0}`, 12);
+      addText(`Target Date: ${scheduleResult.target_date}`, 12);
+      yPosition += 8;
+
+      // Recommendations
+      if (scheduleResult.recommendations?.length > 0) {
+        addText('RECOMMENDATIONS', 14, true);
+        yPosition += 3;
+        scheduleResult.recommendations.forEach(rec => {
+          addText(`• ${rec}`, 11);
+        });
+        yPosition += 8;
+      }
+
+      // Conflicts
+      if (scheduleResult.conflicts?.length > 0) {
+        addText('CONFLICTS/WARNINGS', 14, true);
+        yPosition += 3;
+        doc.setTextColor(200, 0, 0);
+        scheduleResult.conflicts.forEach(conflict => {
+          addText(`• ${conflict}`, 11);
+        });
+        doc.setTextColor(0, 0, 0);
+        yPosition += 8;
+      }
+
+      // Chapter Schedule
+      addText('CHAPTER SCHEDULE', 16, true);
+      yPosition += 5;
+
+      scheduleResult.schedule?.forEach((chapter, index) => {
+        // Check if we need a new page
+        if (yPosition + 50 > pageHeight - 20) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        // Chapter header with background
+        doc.setFillColor(240, 240, 240);
+        doc.rect(margin, yPosition - 5, maxWidth, 8, 'F');
+        
+        addText(`${index + 1}. ${chapter.chapter_name}`, 12, true);
+        yPosition += 2;
+
+        // Priority with color coding
+        const priorityColor = chapter.priority === 'high' ? [255, 0, 0] : 
+                            chapter.priority === 'medium' ? [255, 165, 0] : [0, 128, 0];
+        doc.setTextColor(...priorityColor);
+        addText(`Priority: ${chapter.priority?.toUpperCase()}`, 10);
+        doc.setTextColor(0, 0, 0);
+
+        // Chapter details
+        addText(`Start Date: ${new Date(chapter.suggested_start_date).toLocaleDateString()}`, 10);
+        addText(`Target Completion: ${new Date(chapter.target_completion_date).toLocaleDateString()}`, 10);
+        addText(`Study Days: ${chapter.estimated_study_days} | Daily Hours: ${chapter.daily_hours} | Pages: ${chapter.pages}`, 10);
+
+        // Topics
+        if (chapter.topics?.length > 0) {
+          addText('Topics:', 10, true);
+          chapter.topics.forEach(topic => {
+            addText(`  - ${topic}`, 9);
+          });
+        }
+        
+        yPosition += 8;
+      });
+
+      // Save the PDF
+      doc.save(`${fileName}.pdf`);
+    } else if (format === 'text') {
+      // Download as formatted text
+      let textContent = `STUDY SCHEDULE\n`;
+      textContent += `Book: ${book?.title || 'Textbook'}\n`;
+      textContent += `Generated: ${new Date().toLocaleDateString()}\n`;
+      textContent += `=====================================\n\n`;
+      
+      // Overview
+      textContent += `OVERVIEW\n`;
+      textContent += `---------\n`;
+      textContent += `Total Chapters: ${scheduleResult.total_chapters}\n`;
+      textContent += `Total Study Days: ${scheduleResult.schedule?.reduce((sum, ch) => sum + (ch.estimated_study_days || 0), 0) || 0}\n`;
+      textContent += `Daily Study Hours: ${scheduleResult.schedule?.[0]?.daily_hours || 0}\n`;
+      textContent += `Target Date: ${scheduleResult.target_date}\n\n`;
+      
+      // Recommendations
+      if (scheduleResult.recommendations?.length > 0) {
+        textContent += `RECOMMENDATIONS\n`;
+        textContent += `---------------\n`;
+        scheduleResult.recommendations.forEach(rec => {
+          textContent += `• ${rec}\n`;
+        });
+        textContent += `\n`;
+      }
+      
+      // Conflicts
+      if (scheduleResult.conflicts?.length > 0) {
+        textContent += `CONFLICTS/WARNINGS\n`;
+        textContent += `------------------\n`;
+        scheduleResult.conflicts.forEach(conflict => {
+          textContent += `• ${conflict}\n`;
+        });
+        textContent += `\n`;
+      }
+      
+      // Chapter Schedule
+      textContent += `CHAPTER SCHEDULE\n`;
+      textContent += `----------------\n\n`;
+      
+      scheduleResult.schedule?.forEach((chapter, index) => {
+        textContent += `${index + 1}. ${chapter.chapter_name}\n`;
+        textContent += `   Priority: ${chapter.priority?.toUpperCase()}\n`;
+        textContent += `   Start Date: ${new Date(chapter.suggested_start_date).toLocaleDateString()}\n`;
+        textContent += `   Target Completion: ${new Date(chapter.target_completion_date).toLocaleDateString()}\n`;
+        textContent += `   Study Days: ${chapter.estimated_study_days}\n`;
+        textContent += `   Daily Hours: ${chapter.daily_hours}\n`;
+        textContent += `   Pages: ${chapter.pages}\n`;
+        if (chapter.topics?.length > 0) {
+          textContent += `   Topics:\n`;
+          chapter.topics.forEach(topic => {
+            textContent += `     - ${topic}\n`;
+          });
+        }
+        textContent += `\n`;
+      });
+      
+      // Create and download text file
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', url);
+      linkElement.setAttribute('download', `${fileName}.txt`);
+      linkElement.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Handle generate study schedule
+  const handleGenerateSchedule = async () => {
+    try {
+      setGeneratingSchedule(true);
+      setScheduleError(null);
+
+      // Validate that all chapters have target dates
+      const validChapters = scheduleChapters.filter(ch => ch.target_completion_date);
+      if (validChapters.length === 0) {
+        setScheduleError('Please set target completion dates for at least one chapter');
+        return;
+      }
+
+      // Prepare the request body
+      const requestBody = {
+        chapters: validChapters.map(ch => ({
+          chapter_name: ch.chapter_name,
+          target_completion_date: new Date(ch.target_completion_date).toISOString().slice(0, -1), // Remove 'Z' timezone suffix
+          estimated_hours: parseFloat(ch.estimated_hours) || 2.0,
+          priority: ch.priority || 'medium'
+        })),
+        study_hours_per_day: scheduleSettings.study_hours_per_day,
+        include_weekends: scheduleSettings.include_weekends,
+        break_days: scheduleSettings.break_days.map(date => new Date(date).toISOString().slice(0, -1)) // Remove 'Z' timezone suffix
+      };
+
+      console.log('Generating study schedule:', requestBody);
+
+      const response = await fetch('http://localhost:8000/api/v1/schedule/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `Failed to generate schedule: ${response.status} ${response.statusText}`);
+      }
+
+      const scheduleData = await response.json();
+      console.log('Schedule generated successfully:', scheduleData);
+
+      setScheduleResult(scheduleData);
+      setShowScheduleModal(false);
+      setShowScheduleResult(true);
+    } catch (err) {
+      console.error('Error generating schedule:', err);
+      setScheduleError(err.message);
+    } finally {
+      setGeneratingSchedule(false);
+    }
+  };
+
+  // Handle updating schedule chapter data
+  const handleScheduleChapterUpdate = (index, field, value) => {
+    setScheduleChapters(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  // Handle adding a break day
+  const handleAddBreakDay = (date) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      break_days: [...prev.break_days, date]
+    }));
+  };
+
+  // Handle removing a break day
+  const handleRemoveBreakDay = (index) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      break_days: prev.break_days.filter((_, i) => i !== index)
+    }));
   };
 
   // Placeholder UI - will be populated when chapters data is available
@@ -1218,6 +1519,31 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
         </div>
       )}
 
+      {/* Action Buttons for All Chapters */}
+      {!loading && !error && chapters.length > 0 && (
+        <div className="mb-4 flex justify-end space-x-3">
+          <button
+            onClick={() => {
+              // Initialize schedule chapters with all chapters
+              const initialChapters = chapters.map(ch => ({
+                chapter_name: ch.title,
+                target_completion_date: '',
+                estimated_hours: 2,
+                priority: 'medium'
+              }));
+              setScheduleChapters(initialChapters);
+              setShowScheduleModal(true);
+            }}
+            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md flex items-center"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Create Study Schedule
+          </button>
+        </div>
+      )}
+
       {/* Chapters List - To be populated when data is available */}
       {!loading && !error && chapters.length > 0 && (
         <div className="space-y-2">
@@ -1783,6 +2109,452 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
               <div className="mt-2 text-xs text-gray-500">
                 Press Enter to send • The AI will use chapter content to provide accurate answers
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Study Schedule Creation Modal */}
+      {showScheduleModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Create Study Schedule
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">Plan your chapter completion timeline</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowScheduleModal(false);
+                  setScheduleError(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {scheduleError && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-md text-sm text-red-700">
+                  <strong>Error:</strong> {scheduleError}
+                </div>
+              )}
+
+              {/* Study Settings */}
+              <div className="mb-6 bg-gray-50 rounded-lg p-4">
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">Study Settings</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Study Hours Per Day
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="range"
+                        min="0.5"
+                        max="8"
+                        step="0.5"
+                        value={scheduleSettings.study_hours_per_day}
+                        onChange={(e) => setScheduleSettings(prev => ({
+                          ...prev,
+                          study_hours_per_day: parseFloat(e.target.value)
+                        }))}
+                        className="flex-1"
+                      />
+                      <span className="w-16 text-center font-semibold text-purple-600">
+                        {scheduleSettings.study_hours_per_day} hrs
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Include Weekends
+                    </label>
+                    <button
+                      onClick={() => setScheduleSettings(prev => ({
+                        ...prev,
+                        include_weekends: !prev.include_weekends
+                      }))}
+                      className={`px-4 py-2 rounded-md transition-colors ${
+                        scheduleSettings.include_weekends
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-300 text-gray-700'
+                      }`}
+                    >
+                      {scheduleSettings.include_weekends ? 'Yes' : 'No'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Break Days */}
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Holidays / Break Days
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="date"
+                      min={new Date().toISOString().split('T')[0]}
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          handleAddBreakDay(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500"
+                    />
+                    <span className="text-sm text-gray-500">Add dates when you won't study</span>
+                  </div>
+                  {scheduleSettings.break_days.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {scheduleSettings.break_days.map((date, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm"
+                        >
+                          {new Date(date).toLocaleDateString()}
+                          <button
+                            onClick={() => handleRemoveBreakDay(index)}
+                            className="ml-2 text-red-500 hover:text-red-700"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Chapters List */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">Set Target Dates for Chapters</h4>
+                <div className="space-y-3">
+                  {scheduleChapters.map((chapter, index) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div className="md:col-span-1">
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Chapter</label>
+                          <p className="font-medium text-gray-800">{chapter.chapter_name}</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Target Date</label>
+                          <input
+                            type="date"
+                            min={new Date().toISOString().split('T')[0]}
+                            value={chapter.target_completion_date}
+                            onChange={(e) => handleScheduleChapterUpdate(index, 'target_completion_date', e.target.value)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Est. Hours</label>
+                          <input
+                            type="number"
+                            min="0.5"
+                            max="100"
+                            step="0.5"
+                            value={chapter.estimated_hours}
+                            onChange={(e) => handleScheduleChapterUpdate(index, 'estimated_hours', e.target.value)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Priority</label>
+                          <select
+                            value={chapter.priority}
+                            onChange={(e) => handleScheduleChapterUpdate(index, 'priority', e.target.value)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500"
+                          >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-between items-center p-6 border-t border-gray-200 bg-gray-50">
+              <p className="text-sm text-gray-500">
+                Set target dates for chapters you want to include in the schedule
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setShowScheduleModal(false);
+                    setScheduleError(null);
+                  }}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleGenerateSchedule}
+                  disabled={generatingSchedule}
+                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  {generatingSchedule ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                      </svg>
+                      Generate Schedule
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Study Schedule Result Modal */}
+      {showScheduleResult && scheduleResult && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 to-blue-50">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Your Study Schedule
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {scheduleResult.start_date && scheduleResult.end_date && (
+                    <>From {new Date(scheduleResult.start_date).toLocaleDateString()} to {new Date(scheduleResult.end_date).toLocaleDateString()}</>
+                  )}
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                {/* Download buttons */}
+                <div className="relative group">
+                  <button
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Download Schedule"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  </button>
+                  {/* Dropdown menu */}
+                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                    <button
+                      onClick={() => downloadSchedule('pdf')}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      Download as PDF
+                    </button>
+                    <button
+                      onClick={() => downloadSchedule('text')}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download as Text
+                    </button>
+                    <button
+                      onClick={() => downloadSchedule('json')}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-b-lg flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                      Download as JSON
+                    </button>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowScheduleResult(false);
+                    setScheduleResult(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 p-2"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Conflicts Warning */}
+              {scheduleResult.conflicts && scheduleResult.conflicts.length > 0 && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h4 className="font-semibold text-red-800 mb-2 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    Scheduling Conflicts
+                  </h4>
+                  <ul className="space-y-1">
+                    {scheduleResult.conflicts.map((conflict, index) => (
+                      <li key={index} className="text-red-700 text-sm">• {conflict}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Recommendations */}
+              {scheduleResult.recommendations && scheduleResult.recommendations.length > 0 && (
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 mb-2 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    Recommendations
+                  </h4>
+                  <ul className="space-y-1">
+                    {scheduleResult.recommendations.map((rec, index) => (
+                      <li key={index} className="text-blue-700 text-sm">• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Schedule Overview */}
+              <div className="mb-6">
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">Schedule Overview</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="bg-purple-50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-purple-600">{scheduleResult.total_chapters}</p>
+                    <p className="text-sm text-gray-600">Total Chapters</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-600">
+                      {scheduleResult.schedule && scheduleResult.schedule.reduce((sum, ch) => sum + (ch.estimated_study_days || 0), 0)}
+                    </p>
+                    <p className="text-sm text-gray-600">Total Study Days</p>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-blue-600">
+                      {(scheduleResult.schedule && scheduleResult.schedule[0]?.daily_hours) || 0}
+                    </p>
+                    <p className="text-sm text-gray-600">Hours/Day</p>
+                  </div>
+                </div>
+
+                {/* Chapter Schedule Cards */}
+                <div className="space-y-3">
+                  {scheduleResult.schedule && scheduleResult.schedule.map((chapter, index) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h5 className="font-semibold text-gray-800">{chapter.chapter_name}</h5>
+                          <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                            <span className="flex items-center">
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                              </svg>
+                              Start: {new Date(chapter.suggested_start_date).toLocaleDateString()}
+                            </span>
+                            <span className="flex items-center">
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                              </svg>
+                              Target: {new Date(chapter.target_completion_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          chapter.priority === 'high' ? 'bg-red-100 text-red-700' :
+                          chapter.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-green-100 text-green-700'
+                        }`}>
+                          {chapter.priority?.toUpperCase()}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div className="bg-gray-50 rounded p-2">
+                          <p className="text-gray-500">Study Days</p>
+                          <p className="font-semibold">{chapter.estimated_study_days}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded p-2">
+                          <p className="text-gray-500">Daily Hours</p>
+                          <p className="font-semibold">{chapter.daily_hours}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded p-2">
+                          <p className="text-gray-500">Total Hours</p>
+                          <p className="font-semibold">{(chapter.estimated_study_days * chapter.daily_hours).toFixed(1)}</p>
+                        </div>
+                      </div>
+
+                      {/* Study Tips */}
+                      {chapter.study_tips && chapter.study_tips.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-xs font-medium text-gray-500 mb-2">Study Tips:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {chapter.study_tips.map((tip, tipIndex) => (
+                              <span key={tipIndex} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                                {tip}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Weekly Breakdown */}
+              {scheduleResult.weekly_breakdown && Object.keys(scheduleResult.weekly_breakdown).length > 0 && (
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Weekly Breakdown</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {Object.entries(scheduleResult.weekly_breakdown).map(([week, chapters]) => (
+                      <div key={week} className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-3 border border-purple-200">
+                        <h5 className="font-semibold text-purple-800 mb-2">{week}</h5>
+                        <div className="space-y-1">
+                          {chapters.map((ch, idx) => (
+                            <p key={idx} className="text-sm text-gray-700">• {ch}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end p-6 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => {
+                  setShowScheduleResult(false);
+                  setScheduleResult(null);
+                }}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
