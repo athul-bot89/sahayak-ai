@@ -29,6 +29,15 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const [worksheetSettings, setWorksheetSettings] = useState({ numQuestions: 10 });
   const [showWorksheetSettings, setShowWorksheetSettings] = useState(false);
   const [selectedChapterForWorksheet, setSelectedChapterForWorksheet] = useState(null);
+  
+  // Chat state management
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [selectedChapterForChat, setSelectedChapterForChat] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [chatError, setChatError] = useState(null);
+  const [includeContext, setIncludeContext] = useState(true);
 
   useEffect(() => {
     // Fetch chapters when component mounts or textbook changes
@@ -362,6 +371,122 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   };
 
   // Handle generate worksheet
+  // Handle opening chat for a chapter
+  const handleOpenChat = (chapter) => {
+    setSelectedChapterForChat(chapter);
+    setShowChatModal(true);
+    setChatMessages([]);
+    setCurrentMessage('');
+    setChatError(null);
+  };
+
+  // Handle sending chat message
+  const handleSendMessage = async () => {
+    if (!currentMessage.trim() || isSendingMessage || !selectedChapterForChat) return;
+
+    const userMessage = currentMessage.trim();
+    setCurrentMessage('');
+    setIsSendingMessage(true);
+    setChatError(null);
+
+    // Add user message to chat
+    const newUserMessage = {
+      type: 'user',
+      content: userMessage,
+      timestamp: new Date().toISOString()
+    };
+    setChatMessages(prev => [...prev, newUserMessage]);
+
+    try {
+      // Prepare conversation history for API
+      const conversationHistory = chatMessages.map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      }));
+
+      // Use the chat endpoint
+      const response = await fetch(
+        `http://localhost:8000/api/v1/chapters/${selectedChapterForChat.id}/chat`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: JSON.stringify({
+            question: userMessage,
+            include_context: includeContext,
+            conversation_history: conversationHistory
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to get response: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Add AI response to chat
+      const aiMessage = {
+        type: 'assistant',
+        content: data.answer,
+        timestamp: data.timestamp || new Date().toISOString(),
+        relatedConcepts: data.related_concepts,
+        confidenceScore: data.confidence_score
+      };
+      setChatMessages(prev => [...prev, aiMessage]);
+
+    } catch (err) {
+      console.error('Error sending message:', err);
+      setChatError(err.message);
+      
+      // Add error message to chat
+      const errorMessage = {
+        type: 'error',
+        content: `Failed to get response: ${err.message}`,
+        timestamp: new Date().toISOString()
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  // Handle Ask a Question (single question mode)
+  // eslint-disable-next-line no-unused-vars
+  const handleAskQuestion = async (chapter, question) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/chapters/${chapter.id}/ask-question`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: JSON.stringify({
+            question: question,
+            include_context: true,
+            conversation_history: []
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to get answer: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error('Error asking question:', err);
+      throw err;
+    }
+  };
+
   const handleGenerateWorksheet = async (chapter, numQuestions = 10) => {
     try {
       setGeneratingWorksheet(prev => ({ ...prev, [chapter.id]: true }));
@@ -1135,6 +1260,20 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                   <span className="text-sm text-gray-400">
                     {chapter.end_page - chapter.start_page + 1} {t('chapters.pagesCount', 'pages')}
                   </span>
+                  {/* Quick Ask AI Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenChat(chapter);
+                    }}
+                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded-full hover:bg-teal-700 transition-colors flex items-center"
+                    title="Ask questions about this chapter"
+                  >
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    Ask AI
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1423,6 +1562,18 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                             </>
                           )}
                         </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenChat(chapter);
+                          }}
+                          className="px-3 py-1 bg-teal-600 text-white text-sm rounded hover:bg-teal-700 transition-colors flex items-center"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                          </svg>
+                          Ask Questions
+                        </button>
                         {generatingSummary[chapter.id] && (
                           <button
                             onClick={(e) => {
@@ -1445,8 +1596,200 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
         </div>
       )}
 
+      {/* Chat Modal */}
+      {showChatModal && selectedChapterForChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full h-[80vh] flex flex-col">
+            {/* Chat Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  Chat about Chapter {selectedChapterForChat.chapter_number || selectedChapterForChat.number}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">{selectedChapterForChat.title}</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={includeContext}
+                    onChange={(e) => setIncludeContext(e.target.checked)}
+                    className="rounded text-blue-600"
+                  />
+                  <span className="text-gray-700">Use chapter context</span>
+                </label>
+                <button
+                  onClick={() => {
+                    setShowChatModal(false);
+                    setSelectedChapterForChat(null);
+                    setChatMessages([]);
+                    setCurrentMessage('');
+                    setChatError(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Messages Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {chatMessages.length === 0 && (
+                <div className="text-center py-8">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                  </svg>
+                  <p className="text-gray-500">Start a conversation by asking a question about this chapter</p>
+                  <div className="mt-4 space-y-2">
+                    <p className="text-sm text-gray-600">Example questions:</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {[
+                        "What are the key concepts in this chapter?",
+                        "Can you summarize the main points?",
+                        "Explain the most important formula",
+                        "What should I focus on for exams?"
+                      ].map((example, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentMessage(example)}
+                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
+                        >
+                          {example}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {chatMessages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.type === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
+                >
+                  <div
+                    className={`max-w-3xl rounded-lg px-4 py-3 ${
+                      message.type === 'user'
+                        ? 'bg-blue-600 text-white'
+                        : message.type === 'error'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {message.type === 'assistant' && (
+                      <div className="flex items-start space-x-2 mb-2">
+                        <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span className="font-semibold text-gray-700">AI Assistant</span>
+                        {message.confidenceScore && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                            {Math.round(message.confidenceScore * 100)}% confident
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {message.type === 'user' && (
+                      <div className="flex items-center space-x-2 mb-2">
+                        <svg className="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span className="font-semibold text-white/90">You</span>
+                      </div>
+                    )}
+                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    {message.relatedConcepts && message.relatedConcepts.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-gray-300">
+                        <p className="text-sm font-semibold mb-1">Related Concepts:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {message.relatedConcepts.map((concept, idx) => (
+                            <span
+                              key={idx}
+                              className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
+                            >
+                              {concept}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-500 mt-2">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {isSendingMessage && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 rounded-lg px-4 py-3">
+                    <div className="flex space-x-2">
+                      <div className="animate-bounce w-2 h-2 bg-gray-600 rounded-full"></div>
+                      <div className="animate-bounce w-2 h-2 bg-gray-600 rounded-full" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="animate-bounce w-2 h-2 bg-gray-600 rounded-full" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Chat Input Area */}
+            <div className="border-t border-gray-200 p-4">
+              {chatError && (
+                <div className="mb-3 p-3 bg-red-100 border border-red-300 rounded-md text-sm text-red-700">
+                  {chatError}
+                </div>
+              )}
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={currentMessage}
+                  onChange={(e) => setCurrentMessage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  placeholder="Type your question here..."
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isSendingMessage}
+                />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={!currentMessage.trim() || isSendingMessage}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  {isSendingMessage ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                      </svg>
+                      Send
+                    </>
+                  )}
+                </button>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                Press Enter to send • The AI will use chapter content to provide accurate answers
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Chapter Statistics - Optional */}
-      {book?.has_toc_extracted && book?.chapter_count > 0 && (
+      {book && book.has_toc_extracted && book.chapter_count > 0 && (
         <div className="mt-6 pt-6 border-t border-gray-200">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
