@@ -3,7 +3,10 @@
     "title": "સહાયક AI",
     "home": "હોમ",
     "library": "પુસ્તકાલય",
-    "about": "અમારા વિશે"
+    "about": "અમારા વિશે",
+    "login": "શિક્ષક લૉગિન",
+    "logout": "લૉગઆઉટ",
+    "welcome": "સ્વાગત છે"
   },
   "hero": {
     "title": "સહાયક AIમાં આપનું સ્વાગત છે",
@@ -41,6 +44,30 @@
     "pages": "પૃષ્ઠો",
     "viewDetails": "વિગતો જુઓ"
   },
+  "login": {
+    "title": "સહાયક AI",
+    "subtitle": "શૈક્ષણિક સહાયક પ્લેટફોર્મ",
+    "welcome": "શિક્ષક લૉગિન",
+    "instruction": "ચાલુ રાખવા માટે કૃપા કરીને તમારા પ્રમાણપત્રો દાખલ કરો",
+    "teacherName": "શિક્ષકનું નામ",
+    "password": "પાસવર્ડ",
+    "usernamePlaceholder": "તમારું શિક્ષક નામ દાખલ કરો",
+    "passwordPlaceholder": "તમારો પાસવર્ડ દાખલ કરો",
+    "rememberMe": "મને યાદ રાખો",
+    "forgotPassword": "પાસવર્ડ ભૂલી ગયા છો?",
+    "loginButton": "સાઇન ઇન કરો",
+    "loggingIn": "લૉગ ઇન થઈ રહ્યું છે...",
+    "demoTitle": "ડેમો પ્રમાણપત્રો:",
+    "demoUsername": "વપરાશકર્તા નામ: teacher",
+    "demoPassword": "પાસવર્ડ: password123",
+    "footer": "© 2024 સહાયક AI. બધા હક્કો અરક્ષિત.",
+    "errors": {
+      "usernameRequired": "શિક્ષકનું નામ જરૂરી છે",
+      "passwordRequired": "પાસવર્ડ જરૂરી છે",
+      "invalidCredentials": "અમાન્ય શિક્ષક નામ અથવા પાસવર્ડ",
+      "loginFailed": "લૉગિન નિષ્ફળ થયું. કૃપા કરીને ફરી પ્રયાસ કરો."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "પુસ્તકાલય પર પાછા જાઓ",
     "bookInfo": "પુસ્તક માહિતી",
@@ -59,16 +86,46 @@
     "viewToc": "વિષયસૂચી જુઓ",
     "loading": "પુસ્તક વિગતો લોડ થઈ રહી છે...",
     "error": "ભૂલ",
-    "notFound": "પુસ્તક મળ્યું નથી"
+    "notFound": "પુસ્તક મળ્યું નથી",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "સહાયક AI વિશે",
     "subtitle": "કૃત્રિમ બુદ્ધિમત્તા સાથે શિક્ષણને સશક્ત બનાવવું",
     "description": "સહાયક AI એક અદ્યતન શૈક્ષણિક પ્લેટફોર્મ છે જે વિદ્યાર્થીઓ શીખે છે અને શિક્ષકો શીખવે છે તે રીતને બદલવા માટે કૃત્રિમ બુદ્ધિમત્તાની શક્તિનો લાભ લે છે.",
+    "missionDescription1": "સહાયક AI એ ભારતીય વિદ્યાર્થીઓ માટે ખાસ રચાયેલ એક નવીન ઓનલાઈન AI શિક્ષક સહાયક પ્લેટફોર્મ છે. અમે સમગ્ર ભારતમાં શીખનારાઓ દ્વારા સામનો કરવામાં આવતી અનન્ય પડકારોને સમજીએ છીએ - ભાષાની વિવિધતાથી લઈને વિવિધ શૈક્ષણિક સંસાધનો સુધી - અને અમે બુદ્ધિશાળી ટેકનોલોજી દ્વારા આ અંતરને પૂરવા માટે પ્રતિબદ્ધ છીએ.",
+    "missionDescription2": "અમારું પ્લેટફોર્મ એક ડિજિટલ 'સહાયક' (મદદગાર) તરીકે કાર્ય કરે છે જે ગ્રામીણ અને શહેરી ભારતના વિદ્યાર્થીઓને તેમની પસંદગીની ભાષામાં ગુણવત્તાયુક્ત શૈક્ષણિક સામગ્રી મેળવવા, પાઠ્યપુસ્તકો દ્વારા કાર્યક્ષમ રીતે નેવિગેટ કરવામાં મદદ કરે છે અને બધા માટે શીખવાને વધુ સમાવિષ્ટ અને સુલભ બનાવે છે.",
     "ourMission": {
       "title": "અમારું મિશન",
-      "description": "વિશ્વભરના વિદ્યાર્થીઓને બુદ્ધિશાળી, સુલભ અને વ્યક્તિગત શિક્ષણ અનુભવો પૂરા પાડીને શિક્ષણને લોકશાહીકરણ કરવું."
+      "description": "બહુવિધ ભારતીય ભાષાઓમાં વિદ્યાર્થીઓને બુદ્ધિશાળી, સુલભ અને વ્યક્તિગત શિક્ષણ અનુભવો પૂરા પાડીને ભારતમાં શિક્ષણને લોકશાહીકરણ કરવું."
     },
+    "platformFeatures": "પ્લેટફોર્મ સુવિધાઓ",
+    "features": {
+      "aiPowered": {
+        "title": "AI-સંચાલિત શિક્ષણ",
+        "description": "અદ્યતન AI અલ્ગોરિધમ્સ ભારતીય વિદ્યાર્થીઓને તેમની માતૃભાષામાં વ્યક્તિગત સ્પષ્ટીકરણો દ્વારા જટિલ ખ્યાલોને સમજવામાં મદદ કરે છે."
+      },
+      "digitalLibrary": {
+        "title": "ડિજિટલ પુસ્તકાલય",
+        "description": "સમગ્ર ભારતમાં ગમે ત્યારે, ગમે ત્યાં NCERT અને રાજ્ય બોર્ડની પાઠ્યપુસ્તકો સાથે શૈક્ષણિક સામગ્રીને ઍક્સેસ કરો."
+      },
+      "smartAnalysis": {
+        "title": "સ્માર્ટ કન્ટેન્ટ વિશ્લેષણ",
+        "description": "ભારતીય અભ્યાસક્રમ સામગ્રી દ્વારા કાર્યક્ષમ નેવિગેશન માટે બુદ્ધિશાળી પ્રકરણ શોધ અને સામગ્રી નિષ્કર્ષણ."
+      },
+      "multiLanguage": {
+        "title": "બહુ-ભાષા સપોર્ટ",
+        "description": "હિન્દી, બંગાળી, તમિલ, તેલુગુ, કન્નડ, મલયાલમ, મરાઠી, ગુજરાતી અને વધુ ભારતીય ભાષાઓને સમર્થન આપે છે."
+      }
+    },
+    "offerings": {
+      "item1": "ભારતીય પાઠ્યપુસ્તકો માટે સ્માર્ટ નેવિગેશન સાથે ઇન્ટરેક્ટિવ PDF વ્યુઅર",
+      "item2": "બહુવિધ લિપિઓમાં સ્વચાલિત વિષયવસ્તુની સૂચિ નિષ્કર્ષણ",
+      "item3": "NCERT અને રાજ્ય અભ્યાસક્રમો માટે પ્રકરણ-વાર સામગ્રી સંગઠન",
+      "item4": "ભારતીય શિક્ષણ પ્રણાલી માટે અનુકૂળ AI-સહાયિત શિક્ષણ ભલામણો",
+      "item5": "મુખ્ય ભારતીય ભાષાઓને સમર્થન આપતું બહુ-ભાષા ઇન્ટરફેસ"
+    },
+    "studentProjectNote": "સહાયક AI એ ભારતનો એક વિદ્યાર્થી પ્રોજેક્ટ છે, જેનો હેતુ આપણા દેશમાં કૃત્રિમ બુદ્ધિમત્તા કેવી રીતે શિક્ષણને પરિવર્તિત કરી શકે છે તે દર્શાવવાનો છે. આ પ્લેટફોર્મ ભારતીય વિદ્યાર્થીઓ માટે શૈક્ષણિક સંસાધનોને વધુ સુલભ બનાવવામાં AI ની સંભાવનાને પ્રદર્શિત કરે છે, તેમની ભાષા કે સ્થાન ગમે તે હોય.",
     "whatWeOffer": {
       "title": "અમે શું ઓફર કરીએ છીએ",
       "item1": "હજારો પાઠ્યપુસ્તકો સાથે વ્યાપક ડિજિટલ પુસ્તકાલય",
@@ -100,5 +157,50 @@
   "footer": {
     "rights": "સર્વ હક્કો સુરક્ષિત.",
     "tagline": "AI સાથે શિક્ષણને સશક્ત બનાવવું"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

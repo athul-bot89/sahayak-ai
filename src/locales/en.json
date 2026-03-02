@@ -3,7 +3,10 @@
     "title": "SAHAYAK AI",
     "home": "Home",
     "library": "Library",
-    "about": "About"
+    "about": "About",
+    "login": "Teacher Login",
+    "logout": "Logout",
+    "welcome": "Welcome"
   },
   "hero": {
     "title": "Welcome to SAHAYAK AI",
@@ -41,6 +44,30 @@
     "pages": "pages",
     "viewDetails": "View Details"
   },
+  "login": {
+    "title": "Sahayak AI",
+    "subtitle": "Educational Assistant Platform",
+    "welcome": "Teacher Login",
+    "instruction": "Please enter your credentials to continue",
+    "teacherName": "Teacher Name",
+    "password": "Password",
+    "usernamePlaceholder": "Enter your teacher name",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Sign In",
+    "loggingIn": "Logging in...",
+    "demoTitle": "Demo Credentials:",
+    "demoUsername": "Username: teacher",
+    "demoPassword": "Password: password123",
+    "footer": "© 2024 Sahayak AI. All rights reserved.",
+    "errors": {
+      "usernameRequired": "Teacher name is required",
+      "passwordRequired": "Password is required",
+      "invalidCredentials": "Invalid teacher name or password",
+      "loginFailed": "Login failed. Please try again."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "Back to Library",
     "bookInfo": "Book Information",
@@ -59,16 +86,46 @@
     "viewToc": "View Table of Contents",
     "loading": "Loading book details...",
     "error": "Error",
-    "notFound": "Book not found"
+    "notFound": "Book not found",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "About SAHAYAK AI",
     "subtitle": "Empowering Education with Artificial Intelligence",
     "description": "SAHAYAK AI is a cutting-edge educational platform that leverages the power of artificial intelligence to transform the way students learn and educators teach. Our mission is to make quality education accessible, engaging, and personalized for everyone.",
+    "missionDescription1": "Sahayak AI is an innovative online AI teacher assistant platform designed specifically for Indian students. We understand the unique challenges faced by learners across India - from language diversity to varying educational resources - and we're committed to bridging these gaps through intelligent technology.",
+    "missionDescription2": "Our platform serves as a digital 'sahayak' (assistant) that empowers students across rural and urban India to access quality educational content in their preferred language, helping them navigate through textbooks efficiently and making learning more inclusive and accessible for all.",
     "ourMission": {
       "title": "Our Mission",
-      "description": "To democratize education by providing intelligent, accessible, and personalized learning experiences to students worldwide."
+      "description": "To democratize education in India by providing intelligent, accessible, and personalized learning experiences to students in multiple Indian languages."
     },
+    "platformFeatures": "Platform Features",
+    "features": {
+      "aiPowered": {
+        "title": "AI-Powered Learning",
+        "description": "Advanced AI algorithms help Indian students understand complex concepts through personalized explanations in their native languages."
+      },
+      "digitalLibrary": {
+        "title": "Digital Library",
+        "description": "Access NCERT and state board textbooks along with educational materials anytime, anywhere across India."
+      },
+      "smartAnalysis": {
+        "title": "Smart Content Analysis",
+        "description": "Intelligent chapter detection and content extraction for efficient navigation through Indian curriculum materials."
+      },
+      "multiLanguage": {
+        "title": "Multi-Language Support",
+        "description": "Supporting Hindi, Bengali, Tamil, Telugu, Kannada, Malayalam, Marathi, Gujarati and more Indian languages."
+      }
+    },
+    "offerings": {
+      "item1": "Interactive PDF viewer with smart navigation for Indian textbooks",
+      "item2": "Automatic table of contents extraction in multiple scripts",
+      "item3": "Chapter-wise content organization for NCERT and state curricula",
+      "item4": "AI-assisted learning recommendations tailored for Indian education system",
+      "item5": "Multi-language interface supporting major Indian languages"
+    },
+    "studentProjectNote": "Sahayak AI is a student project from India, aimed at demonstrating how artificial intelligence can transform education in our country. This platform showcases the potential of AI in making educational resources more accessible to Indian students, regardless of their language or location.",
     "whatWeOffer": {
       "title": "What We Offer",
       "item1": "Comprehensive digital library with thousands of textbooks",
@@ -111,7 +168,36 @@
     "totalChapters": "Total Chapters",
     "tocPages": "TOC Pages",
     "totalPages": "Total Pages",
-    "avgPagesPerChapter": "Avg Pages/Chapter"
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   },
   "footer": {
     "rights": "All rights reserved.",

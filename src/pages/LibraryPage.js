@@ -145,7 +145,7 @@ const LibraryPage = () => {
       <div className="flex-grow bg-gray-50 flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading library...</p>
+          <p className="mt-4 text-gray-600">{t('library.loading')}</p>
         </div>
       </div>
     );
@@ -208,7 +208,7 @@ const LibraryPage = () => {
               onChange={(e) => setFilterAuthor(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">All Authors</option>
+              <option value="">{t('library.allAuthors')}</option>
               {uniqueAuthors.map(author => (
                 <option key={author} value={author}>{author}</option>
               ))}
@@ -218,14 +218,14 @@ const LibraryPage = () => {
               onChange={(e) => setFilterTOC(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">All Books</option>
-              <option value="yes">With TOC</option>
-              <option value="no">Without TOC</option>
+              <option value="">{t('library.allBooks')}</option>
+              <option value="yes">{t('library.withTOC')}</option>
+              <option value="no">{t('library.withoutTOC')}</option>
             </select>
           </div>
           {filteredBooks.length !== books.length && (
             <p className="mt-4 text-gray-600">
-              Showing {filteredBooks.length} of {books.length} books
+              {t('library.showingBooks', { showing: filteredBooks.length, total: books.length })}
             </p>
           )}
         </div>
@@ -233,7 +233,7 @@ const LibraryPage = () => {
         {/* Books Grid */}
         {filteredBooks.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No books found matching your criteria.</p>
+            <p className="text-gray-500 text-lg">{t('library.noBooksMatchingCriteria')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -286,7 +286,7 @@ const LibraryPage = () => {
                     handleBookClick(book.id);
                   }}
                 >
-                  View Details
+                  {t('library.viewDetails')}
                 </button>
               </div>
             ))}
@@ -300,7 +300,7 @@ const LibraryPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Upload Textbook</h2>
+              <h2 className="text-2xl font-bold text-gray-800">{t('library.uploadTextbook')}</h2>
               <button
                 onClick={closeUploadModal}
                 className="text-gray-500 hover:text-gray-700"
@@ -313,21 +313,21 @@ const LibraryPage = () => {
 
             {uploadSuccess ? (
               <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                <p className="font-medium">Success!</p>
-                <p>Textbook uploaded successfully. Redirecting...</p>
+                <p className="font-medium">{t('library.success')}</p>
+                <p>{t('library.uploadSuccessMessage')}</p>
               </div>
             ) : (
               <form onSubmit={handleUploadSubmit}>
                 {uploadError && (
                   <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-                    <p className="font-medium">Error</p>
+                    <p className="font-medium">{t('library.error')}</p>
                     <p>{uploadError}</p>
                   </div>
                 )}
 
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="file">
-                    PDF File *
+                    {t('library.pdfFile')} *
                   </label>
                   <input
                     type="file"
@@ -339,14 +339,14 @@ const LibraryPage = () => {
                   />
                   {uploadFile && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected: {uploadFile.name} ({(uploadFile.size / 1024 / 1024).toFixed(2)} MB)
+                      {t('library.selected')}: {uploadFile.name} ({(uploadFile.size / 1024 / 1024).toFixed(2)} MB)
                     </p>
                   )}
                 </div>
 
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                    Title *
+                    {t('library.titleLabel')} *
                   </label>
                   <input
                     type="text"
@@ -361,7 +361,7 @@ const LibraryPage = () => {
 
                 <div className="mb-6">
                   <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="author">
-                    Author *
+                    {t('library.authorLabel')} *
                   </label>
                   <input
                     type="text"
@@ -369,7 +369,7 @@ const LibraryPage = () => {
                     value={uploadAuthor}
                     onChange={(e) => setUploadAuthor(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="e.g., John Doe"
+                    placeholder={t('library.authorPlaceholder')}
                     disabled={uploadLoading}
                   />
                 </div>
@@ -381,7 +381,7 @@ const LibraryPage = () => {
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                     disabled={uploadLoading}
                   >
-                    Cancel
+                    {t('library.cancel')}
                   </button>
                   <button
                     type="submit"
@@ -394,10 +394,10 @@ const LibraryPage = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Uploading...
+                        {t('library.uploading')}
                       </>
                     ) : (
-                      'Upload'
+                      t('library.upload')
                     )}
                   </button>
                 </div>

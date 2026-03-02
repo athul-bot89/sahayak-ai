@@ -41,6 +41,30 @@
     "pages": "পৃষ্ঠা",
     "viewDetails": "বিস্তারিত দেখুন"
   },
+  "login": {
+    "title": "সহায়ক এআই",
+    "subtitle": "শিক্ষামূলক সহায়ক প্ল্যাটফর্ম",
+    "welcome": "শিক্ষক লগইন",
+    "instruction": "অব্যাহত রাখতে আপনার শংসাপত্র লিখুন",
+    "teacherName": "শিক্ষকের নাম",
+    "password": "পাসওয়ার্ড",
+    "usernamePlaceholder": "আপনার শিক্ষক নাম লিখুন",
+    "passwordPlaceholder": "আপনার পাসওয়ার্ড লিখুন",
+    "rememberMe": "আমাকে মনে রাখুন",
+    "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "loginButton": "সাইন ইন করুন",
+    "loggingIn": "লগ ইন হচ্ছে...",
+    "demoTitle": "ডেমো শংসাপত্র:",
+    "demoUsername": "ব্যবহারকারীর নাম: teacher",
+    "demoPassword": "পাসওয়ার্ড: password123",
+    "footer": "© 2024 সহায়ক এআই। সর্বস্বত্ব সংরক্ষিত।",
+    "errors": {
+      "usernameRequired": "শিক্ষকের নাম প্রয়োজন",
+      "passwordRequired": "পাসওয়ার্ড প্রয়োজন",
+      "invalidCredentials": "অবৈধ শিক্ষক নাম বা পাসওয়ার্ড",
+      "loginFailed": "লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"
+    }
+  },
   "bookDetail": {
     "backToLibrary": "লাইব্রেরিতে ফিরে যান",
     "bookInfo": "বই তথ্য",
@@ -59,16 +83,46 @@
     "viewToc": "সূচিপত্র দেখুন",
     "loading": "বই বিবরণ লোড হচ্ছে...",
     "error": "ত্রুটি",
-    "notFound": "বই পাওয়া যায়নি"
+    "notFound": "বই পাওয়া যায়নি",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "সহায়ক AI সম্পর্কে",
     "subtitle": "কৃত্রিম বুদ্ধিমত্তার সাথে শিক্ষাকে শক্তিশালী করা",
     "description": "সহায়ক AI একটি অত্যাধুনিক শিক্ষামূলক প্ল্যাটফর্ম যা শিক্ষার্থীরা শেখার এবং শিক্ষকরা শেখানোর উপায় রূপান্তরিত করতে কৃত্রিম বুদ্ধিমত্তার শক্তি ব্যবহার করে।",
+    "missionDescription1": "সহায়ক AI হল ভারতীয় শিক্ষার্থীদের জন্য বিশেষভাবে ডিজাইন করা একটি উদ্ভাবনী অনলাইন AI শিক্ষক সহায়ক প্ল্যাটফর্ম। আমরা ভারত জুড়ে শিক্ষার্থীদের সম্মুখীন হওয়া অনন্য চ্যালেঞ্জগুলি বুঝি - ভাষার বৈচিত্র্য থেকে বিভিন্ন শিক্ষাগত সম্পদ পর্যন্ত - এবং আমরা বুদ্ধিমান প্রযুক্তির মাধ্যমে এই ফাঁকগুলি পূরণ করতে প্রতিশ্রুতিবদ্ধ।",
+    "missionDescription2": "আমাদের প্ল্যাটফর্ম একটি ডিজিটাল 'সহায়ক' (সহকারী) হিসাবে কাজ করে যা গ্রামীণ এবং শহুরে ভারত জুড়ে শিক্ষার্থীদের তাদের পছন্দের ভাষায় মানসম্পন্ন শিক্ষা সামগ্রী অ্যাক্সেস করতে সক্ষম করে, তাদের পাঠ্যপুস্তকের মাধ্যমে দক্ষতার সাথে নেভিগেট করতে সাহায্য করে এবং সকলের জন্য শিক্ষাকে আরও অন্তর্ভুক্তিমূলক এবং অ্যাক্সেসযোগ্য করে তোলে।",
     "ourMission": {
       "title": "আমাদের মিশন",
-      "description": "বিশ্বব্যাপী শিক্ষার্থীদের বুদ্ধিমান, অ্যাক্সেসযোগ্য এবং ব্যক্তিগত শিক্ষার অভিজ্ঞতা প্রদান করে শিক্ষাকে গণতান্ত্রিক করা।"
+      "description": "একাধিক ভারতীয় ভাষায় শিক্ষার্থীদের বুদ্ধিমান, অ্যাক্সেসযোগ্য এবং ব্যক্তিগত শিক্ষার অভিজ্ঞতা প্রদান করে ভারতে শিক্ষাকে গণতান্ত্রিক করা।"
     },
+    "platformFeatures": "প্ল্যাটফর্ম বৈশিষ্ট্য",
+    "features": {
+      "aiPowered": {
+        "title": "AI-চালিত শিক্ষা",
+        "description": "উন্নত AI অ্যালগরিদম ভারতীয় শিক্ষার্থীদের তাদের মাতৃভাষায় ব্যক্তিগত ব্যাখ্যার মাধ্যমে জটিল ধারণাগুলি বুঝতে সাহায্য করে।"
+      },
+      "digitalLibrary": {
+        "title": "ডিজিটাল লাইব্রেরি",
+        "description": "ভারত জুড়ে যে কোনো সময়, যে কোনো জায়গায় NCERT এবং রাজ্য বোর্ডের পাঠ্যপুস্তক সহ শিক্ষা সামগ্রী অ্যাক্সেস করুন।"
+      },
+      "smartAnalysis": {
+        "title": "স্মার্ট বিষয়বস্তু বিশ্লেষণ",
+        "description": "ভারতীয় পাঠ্যক্রম সামগ্রীর মাধ্যমে দক্ষ নেভিগেশনের জন্য বুদ্ধিমান অধ্যায় সনাক্তকরণ এবং বিষয়বস্তু নিষ্কাশন।"
+      },
+      "multiLanguage": {
+        "title": "বহু-ভাষা সমর্থন",
+        "description": "হিন্দি, বাংলা, তামিল, তেলুগু, কন্নড়, মালয়ালম, মারাঠি, গুজরাটি এবং আরও ভারতীয় ভাষা সমর্থন করে।"
+      }
+    },
+    "offerings": {
+      "item1": "ভারতীয় পাঠ্যপুস্তকের জন্য স্মার্ট নেভিগেশন সহ ইন্টারঅ্যাক্টিভ PDF ভিউয়ার",
+      "item2": "একাধিক স্ক্রিপ্টে স্বয়ংক্রিয় সূচিপত্র নিষ্কাশন",
+      "item3": "NCERT এবং রাজ্য পাঠ্যক্রমের জন্য অধ্যায়-ভিত্তিক বিষয়বস্তু সংগঠন",
+      "item4": "ভারতীয় শিক্ষা ব্যবস্থার জন্য তৈরি AI-সহায়তা শিক্ষা সুপারিশ",
+      "item5": "প্রধান ভারতীয় ভাষা সমর্থনকারী বহু-ভাষা ইন্টারফেস"
+    },
+    "studentProjectNote": "সহায়ক AI হল ভারত থেকে একটি ছাত্র প্রকল্প, যা আমাদের দেশে কৃত্রিম বুদ্ধিমত্তা কীভাবে শিক্ষাকে রূপান্তরিত করতে পারে তা প্রদর্শন করার লক্ষ্যে। এই প্ল্যাটফর্মটি ভারতীয় শিক্ষার্থীদের জন্য শিক্ষাগত সম্পদগুলিকে আরও অ্যাক্সেসযোগ্য করে তোলার ক্ষেত্রে AI এর সম্ভাবনা প্রদর্শন করে, তাদের ভাষা বা অবস্থান নির্বিশেষে।",
     "whatWeOffer": {
       "title": "আমরা যা অফার করি",
       "item1": "হাজার হাজার পাঠ্যবই সহ ব্যাপক ডিজিটাল লাইব্রেরি",
@@ -100,5 +154,50 @@
   "footer": {
     "rights": "সমস্ত অধিকার সংরক্ষিত।",
     "tagline": "AI এর সাথে শিক্ষাকে শক্তিশালী করা"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

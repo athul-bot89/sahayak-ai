@@ -306,11 +306,11 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       });
 
       // Show success message (you can add a toast notification here)
-      alert(`Chapter "${chapter.title}" deleted successfully`);
+      alert(t('chapters.deleteSuccess', { title: chapter.title }));
       
     } catch (err) {
       console.error('Error deleting chapter:', err);
-      alert(`Failed to delete chapter: ${err.message}`);
+      alert(t('chapters.deleteFailed', { error: err.message }));
     } finally {
       setDeletingChapter(null);
       setShowDeleteConfirm(false);
@@ -378,7 +378,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       
     } catch (err) {
       console.error('Error generating summary:', err);
-      alert(`Failed to generate summary: ${err.message}`);
+      alert(t('chapters.summaryFailed', { error: err.message }));
     } finally {
       setGeneratingSummary(prev => ({ ...prev, [chapter.id]: false }));
     }
@@ -538,7 +538,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       
     } catch (err) {
       console.error('Error generating worksheet:', err);
-      alert(`Failed to generate worksheet: ${err.message}`);
+      alert(t('chapters.worksheetFailed', { error: err.message }));
     } finally {
       setGeneratingWorksheet(prev => ({ ...prev, [chapter.id]: false }));
     }
@@ -607,7 +607,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       console.log('Chapter updated successfully');
     } catch (err) {
       console.error('Error updating chapter:', err);
-      alert(`Failed to update chapter: ${err.message}`);
+      alert(t('chapters.updateFailed', { error: err.message }));
     } finally {
       setUpdateLoading(false);
     }
@@ -909,7 +909,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
           <div className="bg-white rounded-lg max-w-lg w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-gray-800">
-                Edit Chapter {editingChapter.chapter_number || editingChapter.number}
+                {t('chapters.editChapter', { number: editingChapter.chapter_number || editingChapter.number })}
               </h3>
               <button
                 onClick={() => {
@@ -928,21 +928,21 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
               {/* Title Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Chapter Title
+                  {t('chapters.chapterTitle')}
                 </label>
                 <input
                   type="text"
                   value={editFormData.title}
                   onChange={(e) => setEditFormData(prev => ({ ...prev, title: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter chapter title"
+                  placeholder={t('chapters.enterChapterTitle')}
                 />
               </div>
 
               {/* Page Range */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Page Range
+                  {t('chapters.pageRange')}
                 </label>
                 <div className="flex items-center space-x-2">
                   <div className="flex-1">
@@ -956,7 +956,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                       min="1"
                       max={book?.total_pages || 1000}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Start page"
+                      placeholder={t('chapters.startPage')}
                     />
                   </div>
                   <span className="text-gray-500">to</span>
@@ -971,7 +971,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                       min={editFormData.start_page}
                       max={book?.total_pages || 1000}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="End page"
+                      placeholder={t('chapters.endPage')}
                     />
                   </div>
                 </div>
@@ -986,15 +986,18 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                   </svg>
-                  Select Pages from PDF
+                  {t('chapters.selectPagesFromPDF')}
                 </button>
               </div>
 
               {/* Current Selection Info */}
               <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                 <p className="text-sm text-blue-800">
-                  <span className="font-semibold">Current selection:</span> Pages {editFormData.start_page} - {editFormData.end_page} 
-                  ({editFormData.end_page - editFormData.start_page + 1} pages total)
+                  <span className="font-semibold">{t('chapters.currentSelection')}:</span> {t('chapters.pagesRange', { 
+                    start: editFormData.start_page, 
+                    end: editFormData.end_page, 
+                    total: editFormData.end_page - editFormData.start_page + 1 
+                  })}
                 </p>
               </div>
 
@@ -1021,10 +1024,10 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Updating...
+                      {t('chapters.updating')}
                     </>
                   ) : (
-                    'Update Chapter'
+                    t('chapters.updateChapter')
                   )}
                 </button>
               </div>
@@ -1061,7 +1064,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-gray-800">
-                Worksheet Settings
+                {t('chapters.worksheetSettings')}
               </h3>
               <button
                 onClick={() => {
@@ -1079,17 +1082,17 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
             <div className="mb-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm font-semibold text-gray-800">
-                  Chapter {selectedChapterForWorksheet.chapter_number || selectedChapterForWorksheet.number}: {selectedChapterForWorksheet.title}
+                  {t('chapters.chapter')} {selectedChapterForWorksheet.chapter_number || selectedChapterForWorksheet.number}: {selectedChapterForWorksheet.title}
                 </p>
                 <p className="text-xs text-gray-600 mt-1">
-                  Pages: {selectedChapterForWorksheet.start_page} - {selectedChapterForWorksheet.end_page}
+                  {t('chapters.pages')}: {selectedChapterForWorksheet.start_page} - {selectedChapterForWorksheet.end_page}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label htmlFor="numQuestions" className="block text-sm font-medium text-gray-700 mb-2">
-                    Number of Questions
+                    {t('chapters.numberOfQuestions')}
                   </label>
                   <div className="flex items-center space-x-3">
                     <input
@@ -1198,7 +1201,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                 </p>
               </div>
               <p className="text-sm text-red-600 mt-3">
-                <strong>Warning:</strong> This action cannot be undone. All associated files and data will be permanently deleted.
+                <strong>{t('chapters.warning')}:</strong> {t('chapters.deleteWarningMessage')}
               </p>
             </div>
 
@@ -1219,7 +1222,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
-                Delete Chapter
+                {t('chapters.deleteChapter')}
               </button>
             </div>
           </div>
@@ -1234,7 +1237,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
                 <h3 className="text-xl font-semibold text-gray-800">
-                  Chapter {summaryModal.data.chapterNumber} Summary
+                  {t('chapters.chapterSummary', { number: summaryModal.data.chapterNumber })}
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">{summaryModal.data.chapterTitle}</p>
               </div>
@@ -1256,7 +1259,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                   <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                   </svg>
-                  Summary
+                  {t('chapters.summary')}
                 </h4>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
@@ -1272,7 +1275,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                     <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
-                    Key Concepts
+                    {t('chapters.keyConcepts')}
                   </h4>
                   <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                     <ul className="space-y-2">

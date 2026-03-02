@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ChaptersSection from '../components/ChaptersSection';
@@ -24,6 +24,39 @@ const BookDetailPage = () => {
   const [chapterError, setChapterError] = useState(null);
   const [processingStep, setProcessingStep] = useState('');
   const [processingDetails, setProcessingDetails] = useState([]);
+  const [pdfViewerHeight, setPdfViewerHeight] = useState('600px');
+  const bookInfoRef = useRef(null);
+
+  // Calculate and update PDF viewer height to match book info section
+  useEffect(() => {
+    const updatePdfHeight = () => {
+      if (bookInfoRef.current) {
+        const infoHeight = bookInfoRef.current.offsetHeight;
+        // Add some padding for the header
+        const totalHeight = Math.max(infoHeight + 56, 600); // 56px for the PDF header, minimum 600px
+        setPdfViewerHeight(`${totalHeight}px`);
+      }
+    };
+
+    // Update height when component mounts or book data changes
+    updatePdfHeight();
+
+    // Add resize observer to handle dynamic content changes
+    const resizeObserver = new ResizeObserver(updatePdfHeight);
+    const currentRef = bookInfoRef.current;
+    
+    if (currentRef) {
+      resizeObserver.observe(currentRef);
+    }
+
+    // Cleanup
+    return () => {
+      if (currentRef) {
+        resizeObserver.unobserve(currentRef);
+      }
+      resizeObserver.disconnect();
+    };
+  }, [book, processingChapters, tocSaved, chapterError, showTocMode]);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -235,7 +268,7 @@ const BookDetailPage = () => {
               <div className="p-2 md:p-4 bg-gray-50 border-b border-gray-200">
                 <h3 className="text-base md:text-lg font-semibold text-gray-800">PDF Preview</h3>
               </div>
-              <div className="relative bg-gray-100 overflow-hidden" style={{ height: '600px', maxHeight: '80vh' }}>
+              <div className="relative bg-gray-100 overflow-hidden" style={{ height: pdfViewerHeight, maxHeight: '85vh' }}>
                 <Suspense fallback={
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
                     <div className="text-center">
@@ -288,7 +321,7 @@ const BookDetailPage = () => {
             </div>
 
             {/* Right Column - Book Information (1/3 width) */}
-            <div className="p-6">
+            <div className="p-6" ref={bookInfoRef}>
               <h2 className="text-xl font-bold mb-6 text-gray-800">{t('bookDetail.bookInfo')}</h2>
               
               {/* TOC Status Alert */}
@@ -413,7 +446,7 @@ const BookDetailPage = () => {
                       link.click();
                       URL.revokeObjectURL(url);
                     } catch (err) {
-                      alert('Failed to download PDF: ' + err.message);
+                      alert(t('bookDetail.downloadFailed', { error: err.message }));
                     }
                   }}
                   className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm font-medium">

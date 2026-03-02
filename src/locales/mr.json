@@ -41,6 +41,30 @@
     "pages": "पृष्ठे",
     "viewDetails": "तपशील पहा"
   },
+  "login": {
+    "title": "सहायक AI",
+    "subtitle": "शैक्षणिक सहाय्यक व्यासपीठ",
+    "welcome": "शिक्षक लॉगिन",
+    "instruction": "सुरू ठेवण्यासाठी कृपया तुमची क्रेडेन्शियल्स टाका",
+    "teacherName": "शिक्षकाचे नाव",
+    "password": "पासवर्ड",
+    "usernamePlaceholder": "तुमचे शिक्षक नाव टाका",
+    "passwordPlaceholder": "तुमचा पासवर्ड टाका",
+    "rememberMe": "मला लक्षात ठेवा",
+    "forgotPassword": "पासवर्ड विसरलात?",
+    "loginButton": "साइन इन करा",
+    "loggingIn": "लॉग इन होत आहे...",
+    "demoTitle": "डेमो क्रेडेन्शियल्स:",
+    "demoUsername": "वापरकर्ता नाव: teacher",
+    "demoPassword": "पासवर्ड: password123",
+    "footer": "© 2024 सहायक AI. सर्व हक्क राखीव.",
+    "errors": {
+      "usernameRequired": "शिक्षकाचे नाव आवश्यक आहे",
+      "passwordRequired": "पासवर्ड आवश्यक आहे",
+      "invalidCredentials": "अवैध शिक्षक नाव किंवा पासवर्ड",
+      "loginFailed": "लॉगिन अयशस्वी. कृपया पुन्हा प्रयत्न करा."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "ग्रंथालयात परत जा",
     "bookInfo": "पुस्तक माहिती",
@@ -59,16 +83,46 @@
     "viewToc": "अनुक्रमणिका पहा",
     "loading": "पुस्तक तपशील लोड करत आहे...",
     "error": "त्रुटी",
-    "notFound": "पुस्तक सापडले नाही"
+    "notFound": "पुस्तक सापडले नाही",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "सहायक एआयबद्दल",
     "subtitle": "कृत्रिम बुद्धिमत्तेसह शिक्षणाला सक्षम करणे",
     "description": "सहायक एआय एक अत्याधुनिक शैक्षणिक व्यासपीठ आहे जे विद्यार्थी शिकण्याच्या आणि शिक्षक शिकवण्याच्या पद्धतीत बदल करण्यासाठी कृत्रिम बुद्धिमत्तेच्या शक्तीचा वापर करते.",
+    "missionDescription1": "सहायक एआय हे विशेषत: भारतीय विद्यार्थ्यांसाठी डिझाइन केलेले एक नाविन्यपूर्ण ऑनलाइन एआय शिक्षक सहाय्यक प्लॅटफॉर्म आहे. भाषा विविधतेपासून ते विविध शैक्षणिक संसाधनांपर्यंत - संपूर्ण भारतातील शिकणाऱ्यांना भेडसावणाऱ्या अनन्य आव्हानांना आम्ही समजून घेतो - आणि बुद्धिमान तंत्रज्ञानाद्वारे या अंतरांना भरून काढण्यासाठी आम्ही वचनबद्ध आहोत.",
+    "missionDescription2": "आमचे प्लॅटफॉर्म एक डिजिटल 'सहायक' (सहाय्यक) म्हणून काम करते जे ग्रामीण आणि शहरी भारतातील विद्यार्थ्यांना त्यांच्या पसंतीच्या भाषेत दर्जेदार शैक्षणिक सामग्री मिळविण्यास सक्षम करते, पाठ्यपुस्तकांमधून कार्यक्षमतेने नेव्हिगेट करण्यास मदत करते आणि सर्वांसाठी शिक्षण अधिक समावेशक आणि सुलभ बनवते.",
     "ourMission": {
       "title": "आमची मिशन",
-      "description": "जगभरातील विद्यार्थ्यांना बुद्धिमान, सुलभ आणि वैयक्तिक शिक्षण अनुभव प्रदान करून शिक्षणाचे लोकशाहीकरण करणे."
+      "description": "अनेक भारतीय भाषांमध्ये विद्यार्थ्यांना बुद्धिमान, सुलभ आणि वैयक्तिक शिक्षण अनुभव प्रदान करून भारतात शिक्षणाचे लोकशाहीकरण करणे."
     },
+    "platformFeatures": "प्लॅटफॉर्म वैशिष्ट्ये",
+    "features": {
+      "aiPowered": {
+        "title": "एआय-चालित शिक्षण",
+        "description": "प्रगत एआय अल्गोरिदम भारतीय विद्यार्थ्यांना त्यांच्या मातृभाषेत वैयक्तिक स्पष्टीकरणाद्वारे जटिल संकल्पना समजून घेण्यास मदत करतात."
+      },
+      "digitalLibrary": {
+        "title": "डिजिटल ग्रंथालय",
+        "description": "भारतभर कधीही, कुठेही NCERT आणि राज्य बोर्डाच्या पाठ्यपुस्तकांसह शैक्षणिक सामग्री मिळवा."
+      },
+      "smartAnalysis": {
+        "title": "स्मार्ट सामग्री विश्लेषण",
+        "description": "भारतीय अभ्यासक्रम सामग्रीद्वारे कार्यक्षम नेव्हिगेशनसाठी बुद्धिमान अध्याय शोध आणि सामग्री निष्कर्षण."
+      },
+      "multiLanguage": {
+        "title": "बहु-भाषा समर्थन",
+        "description": "हिंदी, बंगाली, तमिळ, तेलुगु, कन्नड, मल्याळम, मराठी, गुजराती आणि अधिक भारतीय भाषांना समर्थन."
+      }
+    },
+    "offerings": {
+      "item1": "भारतीय पाठ्यपुस्तकांसाठी स्मार्ट नेव्हिगेशनसह इंटरएक्टिव्ह पीडीएफ व्ह्यूअर",
+      "item2": "अनेक लिपींमध्ये स्वयंचलित अनुक्रमणिका निष्कर्षण",
+      "item3": "NCERT आणि राज्य अभ्यासक्रमांसाठी अध्याय-वार सामग्री संघटना",
+      "item4": "भारतीय शिक्षण प्रणालीसाठी तयार केलेल्या एआय-सहाय्यित शिक्षण शिफारशी",
+      "item5": "प्रमुख भारतीय भाषांना समर्थन देणारा बहु-भाषा इंटरफेस"
+    },
+    "studentProjectNote": "सहायक एआय हा भारतातील एक विद्यार्थी प्रकल्प आहे, ज्याचा उद्देश आपल्या देशात कृत्रिम बुद्धिमत्ता शिक्षणाचे रूपांतर कसे करू शकते हे दाखवणे आहे. हे प्लॅटफॉर्म भारतीय विद्यार्थ्यांसाठी शैक्षणिक संसाधने अधिक सुलभ बनविण्यात एआयच्या क्षमतेचे प्रदर्शन करते, त्यांची भाषा किंवा स्थान काहीही असो.",
     "whatWeOffer": {
       "title": "आम्ही काय ऑफर करतो",
       "item1": "हजारो पाठ्यपुस्तकांसह सर्वसमावेशक डिजिटल ग्रंथालय",
@@ -100,5 +154,50 @@
   "footer": {
     "rights": "सर्व हक्क राखीव.",
     "tagline": "एआयसह शिक्षणाला सक्षम करणे"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

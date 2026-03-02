@@ -41,6 +41,30 @@
     "pages": "പേജുകൾ",
     "viewDetails": "വിശദാംശങ്ങൾ കാണുക"
   },
+  "login": {
+    "title": "സഹായക AI",
+    "subtitle": "വിദ്യാഭ്യാസ സഹായക പ്ലാറ്റ്‌ഫോം",
+    "welcome": "അധ്യാപക ലോഗിൻ",
+    "instruction": "തുടരാൻ നിങ്ങളുടെ യോഗ്യതാപത്രങ്ങൾ നൽകുക",
+    "teacherName": "അധ്യാപകന്റെ പേര്",
+    "password": "പാസ്‌വേഡ്",
+    "usernamePlaceholder": "നിങ്ങളുടെ അധ്യാപകന്റെ പേര് നൽകുക",
+    "passwordPlaceholder": "നിങ്ങളുടെ പാസ്‌വേഡ് നൽകുക",
+    "rememberMe": "എന്നെ ഓർമ്മിക്കുക",
+    "forgotPassword": "പാസ്‌വേഡ് മറന്നോ?",
+    "loginButton": "സൈൻ ഇൻ ചെയ്യുക",
+    "loggingIn": "ലോഗ് ഇൻ ചെയ്യുന്നു...",
+    "demoTitle": "ഡെമോ യോഗ്യതാപത്രങ്ങൾ:",
+    "demoUsername": "ഉപയോക്തൃനാമം: teacher",
+    "demoPassword": "പാസ്‌വേഡ്: password123",
+    "footer": "© 2024 സഹായക AI. എല്ലാ അവകാശങ്ങളും സംരക്ഷിതം.",
+    "errors": {
+      "usernameRequired": "അധ്യാപകന്റെ പേര് ആവശ്യമാണ്",
+      "passwordRequired": "പാസ്‌വേഡ് ആവശ്യമാണ്",
+      "invalidCredentials": "അസാധുവായ അധ്യാപകന്റെ പേര് അല്ലെങ്കിൽ പാസ്‌വേഡ്",
+      "loginFailed": "ലോഗിൻ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "ലൈബ്രറിയിലേക്ക് മടങ്ങുക",
     "bookInfo": "പുസ്തക വിവരങ്ങൾ",
@@ -59,16 +83,46 @@
     "viewToc": "ഉള്ളടക്ക പട്ടിക കാണുക",
     "loading": "പുസ്തക വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നു...",
     "error": "പിശക്",
-    "notFound": "പുസ്തകം കണ്ടെത്തിയില്ല"
+    "notFound": "പുസ്തകം കണ്ടെത്തിയില്ല",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "സഹായക് എഐയെ കുറിച്ച്",
     "subtitle": "കൃത്രിമ ബുദ്ധിമത്തയിലൂടെ വിദ്യാഭ്യാസം ശാക്തീകരിക്കുന്നു",
     "description": "സഹായക് എഐ വിദ്യാർത്ഥികൾ പഠിക്കുന്നതും അധ്യാപകർ പഠിപ്പിക്കുന്നതുമായ രീതി മാറ്റാൻ കൃത്രിമ ബുദ്ധിമത്തയുടെ ശക്തി ഉപയോഗിക്കുന്ന അത്യാധുനിക വിദ്യാഭ്യാസ പ്ലാറ്റ്‌ഫോമാണ്.",
+    "missionDescription1": "സഹായക് എഐ ഇന്ത്യൻ വിദ്യാർത്ഥികൾക്കായി പ്രത്യേകം രൂപകൽപ്പന ചെയ്ത ഒരു നൂതന ഓൺലൈൻ എഐ അധ്യാപക സഹായി പ്ലാറ്റ്‌ഫോമാണ്. ഭാഷാ വൈവിധ്യം മുതൽ വിവിധ വിദ്യാഭ്യാസ വിഭവങ്ങൾ വരെ - ഇന്ത്യയിലുടനീളമുള്ള പഠിതാക്കൾ നേരിടുന്ന അതുല്യമായ വെല്ലുവിളികൾ ഞങ്ങൾ മനസ്സിലാക്കുന്നു - ബുദ്ധിമതായ സാങ്കേതികവിദ്യയിലൂടെ ഈ വിടവുകൾ നികത്താൻ ഞങ്ങൾ പ്രതിജ്ഞാബദ്ധരാണ്.",
+    "missionDescription2": "ഞങ്ങളുടെ പ്ലാറ്റ്‌ഫോം ഒരു ഡിജിറ്റൽ 'സഹായക്' (സഹായി) ആയി പ്രവർത്തിക്കുന്നു, ഇത് ഗ്രാമീണ, നഗര ഇന്ത്യയിലെ വിദ്യാർത്ഥികൾക്ക് അവരുടെ ഇഷ്ടഭാഷയിൽ ഗുണനിലവാരമുള്ള വിദ്യാഭ്യാസ ഉള്ളടക്കം ആക്‌സസ് ചെയ്യാനും പാഠപുസ്തകങ്ങളിലൂടെ കാര്യക്ഷമമായി നാവിഗേറ്റ് ചെയ്യാനും എല്ലാവർക്കും പഠനം കൂടുതൽ ഉൾക്കൊള്ളുന്നതും പ്രാപ്യവുമാക്കാനും സഹായിക്കുന്നു.",
     "ourMission": {
       "title": "ഞങ്ങളുടെ ദൗത്യം",
-      "description": "ലോകമെമ്പാടുമുള്ള വിദ്യാർത്ഥികൾക്ക് ബുദ്ധിമാനും സുലഭവും വ്യക്തിഗതവുമായ പഠന അനുഭവങ്ങൾ നൽകി വിദ്യാഭ്യാസം ജനാധിപത്യവൽക്കരിക്കുക."
+      "description": "ഒന്നിലധികം ഇന്ത്യൻ ഭാഷകളിൽ വിദ്യാർത്ഥികൾക്ക് ബുദ്ധിമാനും സുലഭവും വ്യക്തിഗതവുമായ പഠന അനുഭവങ്ങൾ നൽകി ഇന്ത്യയിൽ വിദ്യാഭ്യാസം ജനാധിപത്യവൽക്കരിക്കുക."
     },
+    "platformFeatures": "പ്ലാറ്റ്‌ഫോം സവിശേഷതകൾ",
+    "features": {
+      "aiPowered": {
+        "title": "എഐ-പവർഡ് പഠനം",
+        "description": "നൂതന എഐ അൽഗോരിതങ്ങൾ ഇന്ത്യൻ വിദ്യാർത്ഥികൾക്ക് അവരുടെ മാതൃഭാഷകളിൽ വ്യക്തിഗത വിശദീകരണങ്ങളിലൂടെ സങ്കീർണ്ണമായ ആശയങ്ങൾ മനസ്സിലാക്കാൻ സഹായിക്കുന്നു."
+      },
+      "digitalLibrary": {
+        "title": "ഡിജിറ്റൽ ലൈബ്രറി",
+        "description": "ഇന്ത്യയിലുടനീളം എപ്പോഴും, എവിടെയും എൻസിഇആർടി, സംസ്ഥാന ബോർഡ് പാഠപുസ്തകങ്ങൾക്കൊപ്പം വിദ്യാഭ്യാസ സാമഗ്രികൾ ആക്‌സസ് ചെയ്യുക."
+      },
+      "smartAnalysis": {
+        "title": "സ്മാർട്ട് ഉള്ളടക്ക വിശകലനം",
+        "description": "ഇന്ത്യൻ പാഠ്യപദ്ധതി സാമഗ്രികളിലൂടെ കാര്യക്ഷമമായ നാവിഗേഷനുവേണ്ടി ബുദ്ധിമത്തായ ചാപ്റ്റർ കണ്ടെത്തലും ഉള്ളടക്ക എക്‌സ്‌ട്രാക്ഷനും."
+      },
+      "multiLanguage": {
+        "title": "ബഹു-ഭാഷാ പിന്തുണ",
+        "description": "ഹിന്ദി, ബംഗാളി, തമിഴ്, തെലുഗു, കന്നഡ, മലയാളം, മറാത്തി, ഗുജറാത്തി തുടങ്ങി കൂടുതൽ ഇന്ത്യൻ ഭാഷകളെ പിന്തുണയ്ക്കുന്നു."
+      }
+    },
+    "offerings": {
+      "item1": "ഇന്ത്യൻ പാഠപുസ്തകങ്ങൾക്കായി സ്മാർട്ട് നാവിഗേഷനോടുകൂടിയ ഇന്ററാക്ടീവ് പിഡിഎഫ് വ്യൂവർ",
+      "item2": "ഒന്നിലധികം സ്ക്രിപ്റ്റുകളിൽ ഓട്ടോമാറ്റിക് ടേബിൾ ഓഫ് കണ്ടന്റ്സ് എക്‌സ്‌ട്രാക്ഷൻ",
+      "item3": "എൻസിഇആർടി, സംസ്ഥാന പാഠ്യപദ്ധതികൾക്കുള്ള ചാപ്റ്റർ അടിസ്ഥാനമാക്കിയുള്ള ഉള്ളടക്ക സംഘടന",
+      "item4": "ഇന്ത്യൻ വിദ്യാഭ്യാസ സമ്പ്രദായത്തിനായി ക്രമീകരിച്ച എഐ-സഹായ പഠന ശുപാർശകൾ",
+      "item5": "പ്രധാന ഇന്ത്യൻ ഭാഷകളെ പിന്തുണയ്ക്കുന്ന ബഹു-ഭാഷാ ഇന്റർഫേസ്"
+    },
+    "studentProjectNote": "സഹായക് എഐ ഇന്ത്യയിൽ നിന്നുള്ള ഒരു വിദ്യാർത്ഥി പദ്ധതിയാണ്, നമ്മുടെ രാജ്യത്ത് കൃത്രിമ ബുദ്ധിമത്തയ്ക്ക് വിദ്യാഭ്യാസത്തെ എങ്ങനെ രൂപാന്തരപ്പെടുത്താമെന്ന് പ്രദർശിപ്പിക്കുകയെന്ന ലക്ഷ്യത്തോടെയാണ് ഇത്. ഈ പ്ലാറ്റ്‌ഫോം ഇന്ത്യൻ വിദ്യാർത്ഥികൾക്ക് വിദ്യാഭ്യാസ വിഭവങ്ങൾ കൂടുതൽ പ്രാപ്യമാക്കുന്നതിൽ എഐയുടെ സാധ്യത പ്രദർശിപ്പിക്കുന്നു, അവരുടെ ഭാഷയോ സ്ഥാനമോ പരിഗണിക്കാതെ.",
     "whatWeOffer": {
       "title": "ഞങ്ങൾ എന്താണ് വാഗ്ദാനം ചെയ്യുന്നത്",
       "item1": "ആയിരക്കണക്കിന് പാഠപുസ്തകങ്ങളുള്ള സമഗ്ര ഡിജിറ്റൽ ലൈബ്രറി",
@@ -100,5 +154,50 @@
   "footer": {
     "rights": "എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം.",
     "tagline": "എഐയിലൂടെ വിദ്യാഭ്യാസം ശാക്തീകരിക്കുന്നു"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

@@ -3,58 +3,36 @@ import { useTranslation } from 'react-i18next';
 
 const AboutPage = () => {
   const { t } = useTranslation();
-  const teamMembers = [
+
+  const features = [
     {
-      id: 1,
-      name: "Sarah Johnson",
-      role: "CEO & Founder",
-      image: "👩‍💼",
-      bio: "Visionary leader with 15+ years in AI innovation"
+      icon: "🤖",
+      title: t('about.features.aiPowered.title'),
+      description: t('about.features.aiPowered.description')
     },
     {
-      id: 2,
-      name: "Michael Chen",
-      role: "CTO",
-      image: "👨‍💻",
-      bio: "Technical genius specializing in machine learning"
+      icon: "📚",
+      title: t('about.features.digitalLibrary.title'),
+      description: t('about.features.digitalLibrary.description')
     },
     {
-      id: 3,
-      name: "Emily Rodriguez",
-      role: "Head of Research",
-      image: "👩‍🔬",
-      bio: "PhD in Computer Science, AI research expert"
+      icon: "🎯",
+      title: t('about.features.smartAnalysis.title'),
+      description: t('about.features.smartAnalysis.description')
     },
     {
-      id: 4,
-      name: "David Kumar",
-      role: "Product Manager",
-      image: "👨‍💼",
-      bio: "Bringing AI solutions to real-world problems"
+      icon: "🌐",
+      title: t('about.features.multiLanguage.title'),
+      description: t('about.features.multiLanguage.description')
     }
   ];
 
-  const values = [
-    {
-      icon: "💡",
-      title: "Innovation",
-      description: "Pushing boundaries in AI technology"
-    },
-    {
-      icon: "🤝",
-      title: "Collaboration",
-      description: "Working together to achieve excellence"
-    },
-    {
-      icon: "🌟",
-      title: "Excellence",
-      description: "Delivering the highest quality solutions"
-    },
-    {
-      icon: "🌍",
-      title: "Impact",
-      description: "Making a positive difference globally"
-    }
+  const offerings = [
+    t('about.offerings.item1'),
+    t('about.offerings.item2'),
+    t('about.offerings.item3'),
+    t('about.offerings.item4'),
+    t('about.offerings.item5')
   ];
 
   return (
@@ -75,95 +53,109 @@ const AboutPage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8 text-gray-800">{t('about.ourMission.title')}</h2>
             <p className="text-lg text-gray-600 mb-6">
-              {t('about.description')}
+              {t('about.missionDescription1')}
             </p>
             <p className="text-lg text-gray-600">
-              {t('about.ourMission.description')}
+              {t('about.missionDescription2')}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Features Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            Our Core Values
+            {t('about.platformFeatures')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <div key={index} className="text-center">
-                <div className="text-5xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                <div className="text-4xl mb-4 text-center">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-3 text-center">{feature.title}</h3>
+                <p className="text-gray-600 text-center">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* What We Offer Section */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            Meet Our Team
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member) => (
-              <div key={member.id} className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-                <div className="text-6xl mb-4">{member.image}</div>
-                <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
-                <p className="text-blue-600 font-medium mb-3">{member.role}</p>
-                <p className="text-gray-600 text-sm">{member.bio}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Story Section */}
-      <section className="bg-blue-50 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-              Our Story
+              {t('about.whatWeOffer.title')}
             </h2>
-            <div className="space-y-6 text-gray-600">
-              <p className="text-lg">
-                Founded in 2020, Sahayak AI emerged from a simple yet powerful vision: 
-                to make artificial intelligence a helpful companion (Sahayak means "helper" 
-                in Sanskrit) for everyone, regardless of their technical expertise.
+            <div className="bg-blue-50 rounded-lg p-8">
+              <ul className="space-y-4">
+                {offerings.map((item, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span className="text-lg text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="bg-gradient-to-br from-blue-50 to-green-50 py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+            {t('about.whyChooseUs.title')}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-blue-600">
+                {t('about.whyChooseUs.aiTechnology.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.aiTechnology.description')}
               </p>
-              <p className="text-lg">
-                What started as a small team of passionate AI researchers has grown into 
-                a global company serving thousands of clients across diverse industries. 
-                Our journey has been marked by continuous innovation, from developing 
-                proprietary algorithms to creating user-friendly interfaces that make 
-                complex AI accessible to all.
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-green-600">
+                {t('about.whyChooseUs.accessibility.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.accessibility.description')}
               </p>
-              <p className="text-lg">
-                Today, we're proud to be at the forefront of the AI revolution, helping 
-                businesses automate processes, gain insights from data, and create 
-                exceptional user experiences. But we're just getting started – the future 
-                holds endless possibilities, and we're excited to explore them with you.
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-purple-600">
+                {t('about.whyChooseUs.personalization.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.personalization.description')}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-orange-600">
+                {t('about.whyChooseUs.community.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.community.description')}
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact CTA */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Let's Build the Future Together
-          </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Have questions or want to learn more about how Sahayak AI can help your business?
-          </p>
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-            Get In Touch
-          </button>
+      {/* Student Project Note */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="bg-gray-100 rounded-lg p-6">
+              <p className="text-gray-600">
+                {t('about.studentProjectNote')}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

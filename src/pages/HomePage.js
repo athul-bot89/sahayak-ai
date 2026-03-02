@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import heroImage from '../utils/Gemini_Generated_Image_yx6lcmyx6lcmyx6l.png';
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
@@ -67,29 +68,47 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            {t('hero.title')}
-          </h1>
-          <p className="text-2xl mb-4 font-semibold">
-            {t('hero.subtitle')}
-          </p>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            {t('hero.description')}
-          </p>
-          <div className="space-x-4">
-            <button 
-              onClick={() => navigate('/library')}
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              {t('hero.exploreButton')}
-            </button>
-            <button 
-              onClick={() => navigate('/about')}
-              className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              {t('hero.learnMoreButton')}
-            </button>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            {/* Text Content */}
+            <div className="flex-1 text-center lg:text-left">
+              <h1 className="text-5xl font-bold mb-6">
+                {t('hero.title')}
+              </h1>
+              <p className="text-2xl mb-4 font-semibold">
+                {t('hero.subtitle')}
+              </p>
+              <p className="text-xl mb-8 max-w-2xl">
+                {t('hero.description')}
+              </p>
+              <div className="space-x-4">
+                <button 
+                  onClick={() => navigate('/library')}
+                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                >
+                  {t('hero.exploreButton')}
+                </button>
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                >
+                  {t('hero.learnMoreButton')}
+                </button>
+              </div>
+            </div>
+            
+            {/* Hero Image */}
+            <div className="flex-1 max-w-lg">
+              <img 
+                src={heroImage} 
+                alt="Sahayak AI - Education Platform" 
+                className="w-full h-auto rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                style={{
+                  maxHeight: '500px',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>

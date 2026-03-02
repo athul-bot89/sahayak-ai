@@ -41,6 +41,30 @@
     "pages": "பக்கங்கள்",
     "viewDetails": "விவரங்களைக் காண்க"
   },
+  "login": {
+    "title": "சகாயக் AI",
+    "subtitle": "கல்வி உதவியாளர் தளம்",
+    "welcome": "ஆசிரியர் உள்நுழைவு",
+    "instruction": "தொடர உங்கள் சான்றுகளை உள்ளிடவும்",
+    "teacherName": "ஆசிரியர் பெயர்",
+    "password": "கடவுச்சொல்",
+    "usernamePlaceholder": "உங்கள் ஆசிரியர் பெயரை உள்ளிடவும்",
+    "passwordPlaceholder": "உங்கள் கடவுச்சொல்லை உள்ளிடவும்",
+    "rememberMe": "என்னை நினைவில் வைத்துக்கொள்",
+    "forgotPassword": "கடவுச்சொல் மறந்துவிட்டீர்களா?",
+    "loginButton": "உள்நுழையவும்",
+    "loggingIn": "உள்நுழைகிறது...",
+    "demoTitle": "டெமோ சான்றுகள்:",
+    "demoUsername": "பயனர் பெயர்: teacher",
+    "demoPassword": "கடவுச்சொல்: password123",
+    "footer": "© 2024 சகாயக் AI. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டுள்ளன.",
+    "errors": {
+      "usernameRequired": "ஆசிரியர் பெயர் தேவை",
+      "passwordRequired": "கடவுச்சொல் தேவை",
+      "invalidCredentials": "தவறான ஆசிரியர் பெயர் அல்லது கடவுச்சொல்",
+      "loginFailed": "உள்நுழைவு தோல்வி. மீண்டும் முயற்சிக்கவும்."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "நூலகத்திற்குத் திரும்பு",
     "bookInfo": "புத்தக தகவல்",
@@ -59,23 +83,53 @@
     "viewToc": "பொருளடக்கத்தைக் காண்க",
     "loading": "புத்தக விவரங்கள் ஏற்றப்படுகிறது...",
     "error": "பிழை",
-    "notFound": "புத்தகம் காணப்படவில்லை"
+    "notFound": "புத்தகம் காணப்படவில்லை",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "சகாயக் AI பற்றி",
     "subtitle": "செயற்கை நுண்ணறிவு மூலம் கல்வியை வலுப்படுத்துதல்",
     "description": "சகாயக் AI என்பது மாணவர்கள் கற்றுக்கொள்ளும் மற்றும் ஆசிரியர்கள் கற்பிக்கும் முறையை மாற்றுவதற்கு செயற்கை நுண்ணறிவின் சக்தியை பயன்படுத்தும் ஒரு அதிநவீன கல்வி தளமாகும்.",
+    "missionDescription1": "சஹாயக் AI என்பது குறிப்பாக இந்திய மாணவர்களுக்காக வடிவமைக்கப்பட்ட ஒரு புதுமையான ஆன்லைன் AI ஆசிரியர் உதவியாளர் தளம் ஆகும். மொழி பன்முகத்தன்மை முதல் பல்வேறு கல்வி வளங்கள் வரை இந்தியா முழுவதும் உள்ள கற்பவர்கள் எதிர்கொள்ளும் தனித்துவமான சவால்களை நாங்கள் புரிந்துகொள்கிறோம் - மேலும் அறிவார்ந்த தொழில்நுட்பம் மூலம் இந்த இடைவெளிகளை நிரப்ப நாங்கள் உறுதிபூண்டுள்ளோம்.",
+    "missionDescription2": "எங்கள் தளம் ஒரு டிஜிட்டல் 'சஹாயக்' (உதவியாளர்) ஆக செயல்படுகிறது, இது கிராமப்புற மற்றும் நகர்ப்புற இந்தியா முழுவதும் உள்ள மாணவர்களுக்கு அவர்களின் விருப்பமான மொழியில் தரமான கல்வி உள்ளடக்கத்தை அணுக உதவுகிறது, பாடநூல்கள் மூலம் திறமையாக செல்ல உதவுகிறது மற்றும் அனைவருக்கும் கற்றலை மேலும் உள்ளடக்கிய மற்றும் அணுகக்கூடியதாக ஆக்குகிறது.",
     "ourMission": {
       "title": "எங்கள் நோக்கம்",
-      "description": "உலகெங்கிலும் உள்ள மாணவர்களுக்கு அறிவார்ந்த, அணுகக்கூடிய மற்றும் தனிப்பயனாக்கப்பட்ட கற்றல் அனுபவங்களை வழங்குவதன் மூலம் கல்வியை ஜனநாயகமாக்குதல்."
+      "description": "பல இந்திய மொழிகளில் மாணவர்களுக்கு அறிவார்ந்த, அணுகக்கூடிய மற்றும் தனிப்பயனாக்கப்பட்ட கற்றல் அனுபவங்களை வழங்குவதன் மூலம் இந்தியாவில் கல்வியை ஜனநாயகப்படுத்துவது."
     },
+    "platformFeatures": "தள அம்சங்கள்",
+    "features": {
+      "aiPowered": {
+        "title": "AI-இயக்கப்படும் கற்றல்",
+        "description": "மேம்பட்ட AI அல்காரிதம்கள் இந்திய மாணவர்களுக்கு அவர்களின் தாய்மொழிகளில் தனிப்பயனாக்கப்பட்ட விளக்கங்கள் மூலம் சிக்கலான கருத்துக்களை புரிந்துகொள்ள உதவுகின்றன."
+      },
+      "digitalLibrary": {
+        "title": "டிஜிட்டல் நூலகம்",
+        "description": "இந்தியா முழுவதும் எப்போது வேண்டுமானாலும், எங்கு வேண்டுமானாலும் NCERT மற்றும் மாநில வாரிய பாடநூல்களுடன் கல்வி பொருட்களை அணுகவும்."
+      },
+      "smartAnalysis": {
+        "title": "ஸ்மார்ட் உள்ளடக்க பகுப்பாய்வு",
+        "description": "இந்திய பாடத்திட்ட பொருட்கள் மூலம் திறமையான வழிசெலுத்தலுக்கு அறிவார்ந்த அத்தியாய கண்டறிதல் மற்றும் உள்ளடக்க பிரித்தெடுத்தல்."
+      },
+      "multiLanguage": {
+        "title": "பன்மொழி ஆதரவு",
+        "description": "இந்தி, வங்காளம், தமிழ், தெலுங்கு, கன்னடம், மலையாளம், மராத்தி, குஜராத்தி மற்றும் பல இந்திய மொழிகளை ஆதரிக்கிறது."
+      }
+    },
+    "offerings": {
+      "item1": "இந்திய பாடநூல்களுக்கு ஸ்மார்ட் வழிசெலுத்தலுடன் ஊடாடல் PDF பார்வையாளர்",
+      "item2": "பல எழுத்துமுறைகளில் தானியங்கி பொருளடக்க அட்டவணை பிரித்தெடுத்தல்",
+      "item3": "NCERT மற்றும் மாநில பாடத்திட்டங்களுக்கு அத்தியாய வாரியான உள்ளடக்க அமைப்பு",
+      "item4": "இந்திய கல்வி முறைக்கு ஏற்ப AI-உதவியுடன் கற்றல் பரிந்துரைகள்",
+      "item5": "முக்கிய இந்திய மொழிகளை ஆதரிக்கும் பன்மொழி இடைமுகம்"
+    },
+    "studentProjectNote": "சஹாயக் AI என்பது இந்தியாவில் இருந்து ஒரு மாணவர் திட்டம், செயற்கை நுண்ணறிவு எப்படி நமது நாட்டில் கல்வியை மாற்ற முடியும் என்பதை நிரூபிப்பதை நோக்கமாகக் கொண்டுள்ளது. இந்த தளம் இந்திய மாணவர்களுக்கு கல்வி வளங்களை மேலும் அணுகக்கூடியதாக மாற்றுவதில் AI இன் திறனை வெளிப்படுத்துகிறது, அவர்களின் மொழி அல்லது இருப்பிடம் எதுவாக இருந்தாலும்.",
     "whatWeOffer": {
       "title": "நாங்கள் என்ன வழங்குகிறோம்",
-      "item1": "ஆயிரக்கணக்கான பாடப்புத்தகங்களுடன் விரிவான டிஜிட்டல் நூலகம்",
-      "item2": "AI-இயக்கும் உள்ளடக்க பகுப்பாய்வு மற்றும் சுருக்கம்",
-      "item3": "ஊடாடும் கற்றல் கருவிகள் மற்றும் மதிப்பீடுகள்",
-      "item4": "தனிப்பயனாக்கப்பட்ட கற்றல் பரிந்துரைகள்",
-      "item5": "பல்வேறு கற்பவர்களுக்கான பல்மொழி ஆதரவு"
+      "item1": "இந்திய பாடநூல்களுக்கு ஸ்மார்ட் வழிசெலுத்தலுடன் ஊடாடல் PDF பார்வையாளர்",
+      "item2": "பல எழுத்துமுறைகளில் தானியங்கி பொருளடக்க அட்டவணை பிரித்தெடுத்தல்",
+      "item3": "NCERT மற்றும் மாநில பாடத்திட்டங்களுக்கு அத்தியாய வாரியான உள்ளடக்க அமைப்பு",
+      "item4": "இந்திய கல்வி முறைக்கு ஏற்ப AI-உதவியுடன் கற்றல் பரிந்துரைகள்",
+      "item5": "முக்கிய இந்திய மொழிகளை ஆதரிக்கும் பன்மொழி இடைமுகம்"
     },
     "whyChooseUs": {
       "title": "ஏன் சகாயக் AI தேர்வு செய்ய வேண்டும்?",
@@ -100,5 +154,50 @@
   "footer": {
     "rights": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
     "tagline": "AI மூலம் கல்வியை வலுப்படுத்துதல்"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

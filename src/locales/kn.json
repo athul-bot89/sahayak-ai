@@ -3,7 +3,10 @@
     "title": "ಸಹಾಯಕ್ AI",
     "home": "ಮುಖಪುಟ",
     "library": "ಗ್ರಂಥಾಲಯ",
-    "about": "ನಮ್ಮ ಬಗ್ಗೆ"
+    "about": "ಬಗ್ಗೆ",
+    "login": "ಶಿಕ್ಷಕ ಲಾಗಿನ್",
+    "logout": "ಲಾಗ್ಔಟ್",
+    "welcome": "ಸ್ವಾಗತ"
   },
   "hero": {
     "title": "ಸಹಾಯಕ್ AIಗೆ ಸ್ವಾಗತ",
@@ -41,6 +44,30 @@
     "pages": "ಪುಟಗಳು",
     "viewDetails": "ವಿವರಗಳನ್ನು ನೋಡಿ"
   },
+  "login": {
+    "title": "ಸಹಾಯಕ AI",
+    "subtitle": "ಶೈಕ್ಷಣಿಕ ಸಹಾಯಕ ವೇದಿಕೆ",
+    "welcome": "ಶಿಕ್ಷಕ ಲಾಗಿನ್",
+    "instruction": "ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ರುಜುವಾತುಗಳನ್ನು ನಮೂದಿಸಿ",
+    "teacherName": "ಶಿಕ್ಷಕರ ಹೆಸರು",
+    "password": "ಪಾಸ್ವರ್ಡ್",
+    "usernamePlaceholder": "ನಿಮ್ಮ ಶಿಕ್ಷಕರ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "passwordPlaceholder": "ನಿಮ್ಮ ಪಾಸ್ವರ್ಡ್ ನಮೂದಿಸಿ",
+    "rememberMe": "ನನ್ನನ್ನು ನೆನಪಿಸಿಕೊಳ್ಳಿ",
+    "forgotPassword": "ಪಾಸ್ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?",
+    "loginButton": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
+    "loggingIn": "ಲಾಗ್ ಇನ್ ಆಗುತ್ತಿದೆ...",
+    "demoTitle": "ಡೆಮೋ ರುಜುವಾತುಗಳು:",
+    "demoUsername": "ಬಳಕೆದಾರ ಹೆಸರು: teacher",
+    "demoPassword": "ಪಾಸ್ವರ್ಡ್: password123",
+    "footer": "© 2024 ಸಹಾಯಕ AI. ಎಲ್ಲ ಹಕ್ಕುಗಳೂ ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
+    "errors": {
+      "usernameRequired": "ಶಿಕ್ಷಕರ ಹೆಸರು ಅಗತ್ಯವಿದೆ",
+      "passwordRequired": "ಪಾಸ್ವರ್ಡ್ ಅಗತ್ಯವಿದೆ",
+      "invalidCredentials": "ಅಮಾನ್ಯ ಶಿಕ್ಷಕರ ಹೆಸರು ಅಥವಾ ಪಾಸ್ವರ್ಡ್",
+      "loginFailed": "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "ಗ್ರಂಥಾಲಯಕ್ಕೆ ಹಿಂತಿರುಗಿ",
     "bookInfo": "ಪುಸ್ತಕ ಮಾಹಿತಿ",
@@ -59,16 +86,46 @@
     "viewToc": "ವಿಷಯ ಸೂಚಿಯನ್ನು ನೋಡಿ",
     "loading": "ಪುಸ್ತಕ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
     "error": "ದೋಷ",
-    "notFound": "ಪುಸ್ತಕ ಕಂಡುಬಂದಿಲ್ಲ"
+    "notFound": "ಪುಸ್ತಕ ಕಂಡುಬಂದಿಲ್ಲ",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "ಸಹಾಯಕ್ AI ಬಗ್ಗೆ",
     "subtitle": "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆಯೊಂದಿಗೆ ಶಿಕ್ಷಣವನ್ನು ಸಬಲೀಕರಣ",
     "description": "ಸಹಾಯಕ್ AI ವಿದ್ಯಾರ್ಥಿಗಳು ಕಲಿಯುವ ಮತ್ತು ಶಿಕ್ಷಕರು ಕಲಿಸುವ ರೀತಿಯನ್ನು ಬದಲಾಯಿಸಲು ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆಯ ಶಕ್ತಿಯನ್ನು ಬಳಸುವ ಅತ್ಯಾಧುನಿಕ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆಯಾಗಿದೆ.",
+    "missionDescription1": "ಸಹಾಯಕ್ AI ಭಾರತೀಯ ವಿದ್ಯಾರ್ಥಿಗಳಿಗಾಗಿ ವಿಶೇಷವಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾದ ನವೀನ ಆನ್‌ಲೈನ್ AI ಶಿಕ್ಷಕ ಸಹಾಯಕ ವೇದಿಕೆಯಾಗಿದೆ. ಭಾಷಾ ವೈವಿಧ್ಯತೆಯಿಂದ ವಿವಿಧ ಶೈಕ್ಷಣಿಕ ಸಂಪನ್ಮೂಲಗಳವರೆಗೆ - ಭಾರತದಾದ್ಯಂತ ಕಲಿಯುವವರು ಎದುರಿಸುತ್ತಿರುವ ವಿಶಿಷ್ಟ ಸವಾಲುಗಳನ್ನು ನಾವು ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದೇವೆ - ಮತ್ತು ಬುದ್ಧಿವಂತ ತಂತ್ರಜ್ಞಾನದ ಮೂಲಕ ಈ ಅಂತರಗಳನ್ನು ಕಡಿಮೆ ಮಾಡಲು ನಾವು ಬದ್ಧರಾಗಿದ್ದೇವೆ.",
+    "missionDescription2": "ನಮ್ಮ ವೇದಿಕೆ ಡಿಜಿಟಲ್ 'ಸಹಾಯಕ್' (ಸಹಾಯಕ) ಆಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ, ಇದು ಗ್ರಾಮೀಣ ಮತ್ತು ನಗರ ಭಾರತದಾದ್ಯಂತ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಅವರ ಆದ್ಯತೆಯ ಭಾಷೆಯಲ್ಲಿ ಗುಣಮಟ್ಟದ ಶೈಕ್ಷಣಿಕ ವಿಷಯವನ್ನು ಪ್ರವೇಶಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ, ಪಠ್ಯಪುಸ್ತಕಗಳ ಮೂಲಕ ಪರಿಣಾಮಕಾರಿಯಾಗಿ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ ಮತ್ತು ಎಲ್ಲರಿಗೂ ಕಲಿಕೆಯನ್ನು ಹೆಚ್ಚು ಸೇರಿಸಿಕೊಳ್ಳುವ ಮತ್ತು ಪ್ರವೇಶಿಸುವಂತೆ ಮಾಡುತ್ತದೆ.",
     "ourMission": {
       "title": "ನಮ್ಮ ಧ್ಯೇಯ",
-      "description": "ಪ್ರಪಂಚದಾದ್ಯಂತ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಬುದ್ಧಿವಂತ, ಪ್ರವೇಶಿಸಬಹುದಾದ ಮತ್ತು ವೈಯಕ್ತಿಕ ಕಲಿಕಾ ಅನುಭವಗಳನ್ನು ಒದಗಿಸುವ ಮೂಲಕ ಶಿಕ್ಷಣವನ್ನು ಪ್ರಜಾಪ್ರಭುತ್ವಗೊಳಿಸುವುದು."
+      "description": "ಬಹು ಭಾರತೀಯ ಭಾಷೆಗಳಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಬುದ್ಧಿವಂತ, ಪ್ರವೇಶಿಸಬಹುದಾದ ಮತ್ತು ವೈಯಕ್ತಿಕ ಕಲಿಕಾ ಅನುಭವಗಳನ್ನು ಒದಗಿಸುವ ಮೂಲಕ ಭಾರತದಲ್ಲಿ ಶಿಕ್ಷಣವನ್ನು ಪ್ರಜಾಪ್ರಭುತ್ವಗೊಳಿಸುವುದು."
     },
+    "platformFeatures": "ವೇದಿಕೆ ವೈಶಿಷ್ಟ್ಯಗಳು",
+    "features": {
+      "aiPowered": {
+        "title": "AI-ಚಾಲಿತ ಕಲಿಕೆ",
+        "description": "ಮುಂದುವರಿದ AI ಅಲ್ಗಾರಿದಮ್‌ಗಳು ಭಾರತೀಯ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಅವರ ಸ್ಥಳೀಯ ಭಾಷೆಗಳಲ್ಲಿ ವ್ಯಕ್ತಿಗತ ವಿವರಣೆಗಳ ಮೂಲಕ ಸಂಕೀರ್ಣ ಪರಿಕಲ್ಪನೆಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತವೆ."
+      },
+      "digitalLibrary": {
+        "title": "ಡಿಜಿಟಲ್ ಗ್ರಂಥಾಲಯ",
+        "description": "ಭಾರತದಾದ್ಯಂತ ಯಾವುದೇ ಸಮಯದಲ್ಲಿ, ಎಲ್ಲಿಯಾದರೂ NCERT ಮತ್ತು ರಾಜ್ಯ ಮಂಡಳಿಯ ಪಠ್ಯಪುಸ್ತಕಗಳೊಂದಿಗೆ ಶೈಕ್ಷಣಿಕ ಸಾಮಗ್ರಿಗಳನ್ನು ಪ್ರವೇಶಿಸಿ."
+      },
+      "smartAnalysis": {
+        "title": "ಸ್ಮಾರ್ಟ್ ವಿಷಯ ವಿಶ್ಲೇಷಣೆ",
+        "description": "ಭಾರತೀಯ ಪಠ್ಯಕ್ರಮ ಸಾಮಗ್ರಿಗಳ ಮೂಲಕ ಪರಿಣಾಮಕಾರಿ ನೆವಿಗೇಷನ್‌ಗಾಗಿ ಬುದ್ಧಿವಂತ ಅಧ್ಯಾಯ ಪತ್ತೆ ಮತ್ತು ವಿಷಯ ಹೊರತೆಗೆಯುವಿಕೆ."
+      },
+      "multiLanguage": {
+        "title": "ಬಹು-ಭಾಷಾ ಬೆಂಬಲ",
+        "description": "ಹಿಂದಿ, ಬೆಂಗಾಲಿ, ತಮಿಳು, ತೆಲುಗು, ಕನ್ನಡ, ಮಲಯಾಳಂ, ಮರಾಠಿ, ಗುಜರಾತಿ ಮತ್ತು ಹೆಚ್ಚಿನ ಭಾರತೀಯ ಭಾಷೆಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ."
+      }
+    },
+    "offerings": {
+      "item1": "ಭಾರತೀಯ ಪಠ್ಯಪುಸ್ತಕಗಳಿಗೆ ಸ್ಮಾರ್ಟ್ ನೆವಿಗೇಷನ್‌ನೊಂದಿಗೆ ಸಂವಾದಾತ್ಮಕ PDF ವೀಕ್ಷಕ",
+      "item2": "ಬಹು ಲಿಪಿಗಳಲ್ಲಿ ಸ್ವಯಂಚಾಲಿತ ವಿಷಯಸೂಚಿ ಹೊರತೆಗೆಯುವಿಕೆ",
+      "item3": "NCERT ಮತ್ತು ರಾಜ್ಯ ಪಠ್ಯಕ್ರಮಗಳಿಗೆ ಅಧ್ಯಾಯ-ವಾರು ವಿಷಯ ಸಂಘಟನೆ",
+      "item4": "ಭಾರತೀಯ ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆಗೆ ಅನುಗುಣವಾಗಿ AI-ಸಹಾಯದ ಕಲಿಕಾ ಶಿಫಾರಸುಗಳು",
+      "item5": "ಪ್ರಮುಖ ಭಾರತೀಯ ಭಾಷೆಗಳನ್ನು ಬೆಂಬಲಿಸುವ ಬಹು-ಭಾಷಾ ಇಂಟರ್‌ಫೇಸ್"
+    },
+    "studentProjectNote": "ಸಹಾಯಕ್ AI ಭಾರತದಿಂದ ವಿದ್ಯಾರ್ಥಿ ಯೋಜನೆಯಾಗಿದೆ, ನಮ್ಮ ದೇಶದಲ್ಲಿ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಶಿಕ್ಷಣವನ್ನು ಹೇಗೆ ಪರಿವರ್ತಿಸಬಹುದು ಎಂಬುದನ್ನು ತೋರಿಸುವ ಗುರಿಯನ್ನು ಹೊಂದಿದೆ. ಈ ವೇದಿಕೆಯು ಭಾರತೀಯ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಶೈಕ್ಷಣಿಕ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೆಚ್ಚು ಪ್ರವೇಶಿಸುವಂತೆ ಮಾಡುವಲ್ಲಿ AI ಯ ಸಾಮರ್ಥ್ಯವನ್ನು ಪ್ರದರ್ಶಿಸುತ್ತದೆ, ಅವರ ಭಾಷೆ ಅಥವಾ ಸ್ಥಳವನ್ನು ಲೆಕ್ಕಿಸದೆ.",
     "whatWeOffer": {
       "title": "ನಾವು ಏನು ಒದಗಿಸುತ್ತೇವೆ",
       "item1": "ಸಾವಿರಾರು ಪಠ್ಯಪುಸ್ತಕಗಳೊಂದಿಗೆ ಸಮಗ್ರ ಡಿಜಿಟಲ್ ಗ್ರಂಥಾಲಯ",
@@ -100,5 +157,50 @@
   "footer": {
     "rights": "ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
     "tagline": "AIನೊಂದಿಗೆ ಶಿಕ್ಷಣವನ್ನು ಸಬಲೀಕರಣ"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }

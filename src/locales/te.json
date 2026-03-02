@@ -41,6 +41,30 @@
     "pages": "పేజీలు",
     "viewDetails": "వివరాలను చూడండి"
   },
+  "login": {
+    "title": "సహాయక AI",
+    "subtitle": "విద్యా సహాయక వేదిక",
+    "welcome": "ఉపాధ్యాయుల లాగిన్",
+    "instruction": "కొనసాగించడానికి దయచేసి మీ ఆధారాలు నమోదు చేయండి",
+    "teacherName": "ఉపాధ్యాయుని పేరు",
+    "password": "పాస్‌వర్డ్",
+    "usernamePlaceholder": "మీ ఉపాధ్యాయ పేరు నమోదు చేయండి",
+    "passwordPlaceholder": "మీ పాస్‌వర్డ్ నమోదు చేయండి",
+    "rememberMe": "నన్ను గుర్తుంచుకో",
+    "forgotPassword": "పాస్‌వర్డ్ మర్చిపోయారా?",
+    "loginButton": "సైన్ ఇన్ చేయండి",
+    "loggingIn": "లాగ్ ఇన్ అవుతోంది...",
+    "demoTitle": "డెమో ఆధారాలు:",
+    "demoUsername": "వినియోగదారు పేరు: teacher",
+    "demoPassword": "పాస్‌వర్డ్: password123",
+    "footer": "© 2024 సహాయక AI. అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.",
+    "errors": {
+      "usernameRequired": "ఉపాధ్యాయుని పేరు అవసరం",
+      "passwordRequired": "పాస్‌వర్డ్ అవసరం",
+      "invalidCredentials": "చెల్లని ఉపాధ్యాయ పేరు లేదా పాస్‌వర్డ్",
+      "loginFailed": "లాగిన్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
+    }
+  },
   "bookDetail": {
     "backToLibrary": "లైబ్రరీకి తిరిగి వెళ్ళండి",
     "bookInfo": "పుస్తక సమాచారం",
@@ -59,16 +83,46 @@
     "viewToc": "విషయ సూచికను చూడండి",
     "loading": "పుస్తక వివరాలను లోడ్ చేస్తోంది...",
     "error": "లోపం",
-    "notFound": "పుస్తకం కనుగొనబడలేదు"
+    "notFound": "పుస్తకం కనుగొనబడలేదు",
+    "downloadFailed": "Failed to download PDF: {{error}}"
   },
   "about": {
     "title": "సహాయక్ AI గురించి",
     "subtitle": "కృత్రిమ మేధస్సుతో విద్యను బలోపేతం చేయడం",
     "description": "సహాయక్ AI విద్యార్థులు నేర్చుకునే మరియు ఉపాధ్యాయులు బోధించే విధానాన్ని మార్చడానికి కృత్రిమ మేధస్సు శక్తిని ఉపయోగించే అత్యాధునిక విద్యా వేదిక.",
+    "missionDescription1": "సహాయక్ AI భారతీయ విద్యార్థుల కోసం ప్రత్యేకంగా రూపొందించబడిన వినూత్న ఆన్‌లైన్ AI టీచర్ అసిస్టెంట్ ప్లాట్‌ఫారమ్. భాష వైవిధ్యం నుండి వివిధ విద్యా వనరుల వరకు - భారతదేశం అంతటా అభ్యాసకులు ఎదుర్కొంటున్న ప్రత్యేక సవాళ్లను మేము అర్థం చేసుకుంటున్నాము - మరియు తెలివైన సాంకేతికత ద్వారా ఈ అంతరాలను తగ్గించడానికి మేము కట్టుబడి ఉన్నాము.",
+    "missionDescription2": "మా ప్లాట్‌ఫార్మ్ డిజిటల్ 'సహాయక్' (సహాయకుడు)గా పనిచేస్తుంది, ఇది గ్రామీణ మరియు పట్టణ భారతదేశం అంతటా విద్యార్థులకు వారి ఇష్టపడే భాషలో నాణ్యమైన విద్యా కంటెంట్‌ను యాక్సెస్ చేయడానికి శక్తినిస్తుంది, పాఠ్యపుస్తకాల ద్వారా సమర్థవంతంగా నావిగేట్ చేయడానికి సహాయం చేస్తుంది మరియు అందరికీ అభ్యాసాన్ని మరింత సమగ్రంగా మరియు అందుబాటులోకి తెస్తుంది.",
     "ourMission": {
       "title": "మా లక్ష్యం",
-      "description": "ప్రపంచవ్యాప్తంగా విద్యార్థులకు తెలివైన, ప్రాప్యత మరియు వ్యక్తిగత అభ్యాస అనుభవాలను అందించడం ద్వారా విద్యను ప్రజాస్వామ్యీకరించడం."
+      "description": "అనేక భారతీయ భాషలలో విద్యార్థులకు తెలివైన, ప్రాప్యత మరియు వ్యక్తిగత అభ్యాస అనుభవాలను అందించడం ద్వారా భారతదేశంలో విద్యను ప్రజాస్వామ్యీకరించడం."
     },
+    "platformFeatures": "ప్లాట్‌ఫార్మ్ ఫీచర్లు",
+    "features": {
+      "aiPowered": {
+        "title": "AI-శక్తితో కూడిన అభ్యాసం",
+        "description": "అధునాతన AI అల్గారిథమ్‌లు భారతీయ విద్యార్థులకు వారి మాతృభాషలలో వ్యక్తిగత వివరణల ద్వారా సంక్లిష్ట భావనలను అర్థం చేసుకోవడంలో సహాయపడతాయి."
+      },
+      "digitalLibrary": {
+        "title": "డిజిటల్ లైబ్రరీ",
+        "description": "భారతదేశం అంతటా ఎప్పుడైనా, ఎక్కడైనా NCERT మరియు రాష్ట్ర బోర్డు పాఠ్యపుస్తకాలతో పాటు విద్యా సామగ్రిని యాక్సెస్ చేయండి."
+      },
+      "smartAnalysis": {
+        "title": "స్మార్ట్ కంటెంట్ విశ్లేషణ",
+        "description": "భారతీయ పాఠ్యాంశ మెటీరియల్స్ ద్వారా సమర్థవంతమైన నావిగేషన్ కోసం తెలివైన చాప్టర్ గుర్తింపు మరియు కంటెంట్ వెలికితీత."
+      },
+      "multiLanguage": {
+        "title": "బహు-భాష మద్దతు",
+        "description": "హిందీ, బెంగాలీ, తమిళం, తెలుగు, కన్నడ, మలయాళం, మరాఠీ, గుజరాతీ మరియు మరిన్ని భారతీయ భాషలకు మద్దతు."
+      }
+    },
+    "offerings": {
+      "item1": "భారతీయ పాఠ్యపుస్తకాల కోసం స్మార్ట్ నావిగేషన్‌తో ఇంటరాక్టివ్ PDF వ్యూవర్",
+      "item2": "బహుళ స్క్రిప్ట్‌లలో ఆటోమేటిక్ టేబుల్ ఆఫ్ కంటెంట్స్ వెలికితీత",
+      "item3": "NCERT మరియు రాష్ట్ర పాఠ్యప్రణాళికల కోసం చాప్టర్-వైజ్ కంటెంట్ వ్యవస్థీకరణ",
+      "item4": "భారతీయ విద్యా వ్యవస్థ కోసం రూపొందించబడిన AI-సహాయక అభ్యాస సిఫార్సులు",
+      "item5": "ప్రధాన భారతీయ భాషలకు మద్దతునిచ్చే బహు-భాష ఇంటర్‌ఫేస్"
+    },
+    "studentProjectNote": "సహాయక్ AI భారతదేశం నుండి ఒక విద్యార్థి ప్రాజెక్ట్, మన దేశంలో కృత్రిమ మేధస్సు విద్యను ఎలా మార్చగలదో ప్రదర్శించడం లక్ష్యంగా ఉంది. ఈ ప్లాట్‌ఫార్మ్ భారతీయ విద్యార్థులకు వారి భాష లేదా స్థానంతో సంబంధం లేకుండా విద్యా వనరులను మరింత అందుబాటులోకి తీసుకురావడంలో AI యొక్క సామర్థ్యాన్ని ప్రదర్శిస్తుంది.",
     "whatWeOffer": {
       "title": "మేము ఏమి అందిస్తాము",
       "item1": "వేలాది పాఠ్యపుస్తకాలతో సమగ్ర డిజిటల్ లైబ్రరీ",
@@ -100,5 +154,50 @@
   "footer": {
     "rights": "అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.",
     "tagline": "AIతో విద్యను బలోపేతం చేయడం"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "loading": "Loading chapters...",
+    "error": "Error loading chapters",
+    "noChapters": "No chapters found in this textbook",
+    "tocNotExtracted": "Table of Contents needs to be extracted first",
+    "extractTocHint": "Use the \"Set Table of Contents\" button to extract chapters",
+    "tocExtracted": "TOC Extracted",
+    "pages": "Pages",
+    "pagesCount": "pages",
+    "subsections": "Subsections will be displayed here",
+    "totalChapters": "Total Chapters",
+    "tocPages": "TOC Pages",
+    "totalPages": "Total Pages",
+    "avgPagesPerChapter": "Avg Pages/Chapter",
+    "deleteSuccess": "Chapter \"{{title}}\" deleted successfully",
+    "deleteFailed": "Failed to delete chapter: {{error}}",
+    "summaryFailed": "Failed to generate summary: {{error}}",
+    "worksheetFailed": "Failed to generate worksheet: {{error}}",
+    "updateFailed": "Failed to update chapter: {{error}}",
+    "editChapter": "Edit Chapter {{number}}",
+    "chapterTitle": "Chapter Title",
+    "enterChapterTitle": "Enter chapter title",
+    "pageRange": "Page Range",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "selectPagesFromPDF": "Select Pages from PDF",
+    "currentSelection": "Current selection",
+    "pagesRange": "Pages {{start}} - {{end}} ({{total}} pages total)",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "updateChapter": "Update Chapter",
+    "worksheetSettings": "Worksheet Settings",
+    "chapter": "Chapter",
+    "numberOfQuestions": "Number of Questions",
+    "deleteConfirmation": "Delete Confirmation",
+    "deleteConfirmMessage": "Are you sure you want to delete the chapter \"{{title}}\"?",
+    "warning": "Warning",
+    "deleteWarningMessage": "This action cannot be undone. All associated files and data will be permanently deleted.",
+    "deleteChapter": "Delete Chapter",
+    "chapterSummary": "Chapter {{number}} Summary",
+    "summary": "Summary",
+    "keyConcepts": "Key Concepts",
+    "close": "Close"
   }
 }
