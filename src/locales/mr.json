@@ -198,6 +198,7 @@
     "chapterSummary": "Chapter {{number}} Summary",
     "summary": "Summary",
     "keyConcepts": "Key Concepts",
-    "close": "Close"
+    "close": "Close",
+    "downloadPdf": "पीडीएफ डाउनलोड करा"
   }
 }

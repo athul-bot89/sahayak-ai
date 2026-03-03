@@ -34,8 +34,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-gray-400">
               <li>Email: info@sahayak-ai.com</li>
-              <li>Phone: +1 (555) 123-4567</li>
-              <li>Location: Technology Hub, Innovation City</li>
+              
             </ul>
           </div>
         </div>

@@ -113,6 +113,21 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Mission Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-8 text-gray-800">{t('about.ourMission.title')}</h2>
+            <p className="text-lg text-gray-600 mb-6">
+              {t('about.missionDescription1')}
+            </p>
+            <p className="text-lg text-gray-600">
+              {t('about.missionDescription2')}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -166,6 +181,94 @@ const HomePage = () => {
               <h3 className="text-xl font-semibold mb-3">{t('features.personalized.title')}</h3>
               <p className="text-gray-600">
                 {t('features.personalized.description')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Offer Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              {t('about.whatWeOffer.title')}
+            </h2>
+            <div className="bg-blue-50 rounded-lg p-8">
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span className="text-lg text-gray-700">{t('about.offerings.item1')}</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span className="text-lg text-gray-700">{t('about.offerings.item2')}</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span className="text-lg text-gray-700">{t('about.offerings.item3')}</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span className="text-lg text-gray-700">{t('about.offerings.item4')}</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span className="text-lg text-gray-700">{t('about.offerings.item5')}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="bg-gradient-to-br from-blue-50 to-green-50 py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+            {t('about.whyChooseUs.title')}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-blue-600">
+                {t('about.whyChooseUs.aiTechnology.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.aiTechnology.description')}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-green-600">
+                {t('about.whyChooseUs.accessibility.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.accessibility.description')}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-purple-600">
+                {t('about.whyChooseUs.personalization.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.personalization.description')}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold mb-3 text-orange-600">
+                {t('about.whyChooseUs.community.title')}
+              </h3>
+              <p className="text-gray-600">
+                {t('about.whyChooseUs.community.description')}
               </p>
             </div>
           </div>

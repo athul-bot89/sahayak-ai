@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SimplePdfViewer from './SimplePdfViewer';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const { t } = useTranslation();
@@ -819,6 +820,154 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
     }
   };
 
+  // Download chapter summary as PDF - creates clean document
+  const downloadChapterSummary = async (summaryData) => {
+    if (!summaryData) return;
+
+    try {
+      // Show loading indication
+      const originalButtonText = document.querySelector('.download-pdf-btn')?.textContent;
+      const downloadButton = document.querySelector('.download-pdf-btn');
+      if (downloadButton) {
+        downloadButton.textContent = 'Generating PDF...';
+        downloadButton.disabled = true;
+      }
+
+      // Create a temporary container with just the content
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.style.width = '794px'; // A4 width at 96 DPI
+      tempContainer.style.padding = '40px';
+      tempContainer.style.backgroundColor = 'white';
+      tempContainer.style.fontFamily = 'Arial, sans-serif';
+      
+      // Build clean content HTML
+      tempContainer.innerHTML = `
+        <div style="color: #1a1a1a;">
+          <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 8px; color: #1f2937;">
+            Chapter ${summaryData.chapterNumber} Summary
+          </h1>
+          <h2 style="font-size: 18px; color: #6b7280; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb;">
+            ${summaryData.chapterTitle}
+          </h2>
+          
+          <div style="margin-top: 24px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">
+              Summary
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify; background-color: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb;">
+              ${(summaryData.summary || 'No summary available').replace(/\n/g, '<br>')}
+            </div>
+          </div>
+          
+          ${summaryData.keyConcepts && summaryData.keyConcepts.length > 0 ? `
+            <div style="margin-top: 32px;">
+              <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">
+                Key Concepts
+              </h3>
+              <div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <ul style="font-size: 14px; line-height: 1.8; color: #374151; list-style: none; padding: 0; margin: 0;">
+                  ${summaryData.keyConcepts.map(concept => 
+                    `<li style="margin-bottom: 8px; padding-left: 20px; position: relative;">
+                      <span style="position: absolute; left: 0; color: #7c3aed;">•</span>
+                      ${concept}
+                    </li>`
+                  ).join('')}
+                </ul>
+              </div>
+            </div>
+          ` : ''}
+          
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #9ca3af; text-align: center;">
+            Generated on ${new Date().toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </div>
+        </div>
+      `;
+      
+      // Append to body temporarily
+      document.body.appendChild(tempContainer);
+      
+      // Wait for rendering
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Capture the clean content
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        windowWidth: 794,
+        windowHeight: tempContainer.scrollHeight
+      });
+
+      // Remove temporary container
+      document.body.removeChild(tempContainer);
+
+      // Convert canvas to image
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Create PDF with proper dimensions
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const imgWidth = 190; // A4 width minus margins (210 - 20)
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 10; // Top margin
+      const pageHeight = 277; // A4 height minus margins (297 - 20)
+      
+      // Add the image to PDF, handling multiple pages if needed
+      while (heightLeft > 0) {
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        if (heightLeft > 0) {
+          position = 10 - (imgHeight - heightLeft); // Continue from where we left off
+          pdf.addPage();
+        }
+      }
+      
+      // Generate filename
+      const safeTitle = summaryData.chapterTitle
+        .replace(/[^a-z0-9\s]/gi, '')
+        .replace(/\s+/g, '_')
+        .substring(0, 50);
+      
+      const fileName = `Chapter_${summaryData.chapterNumber}_Summary_${safeTitle}.pdf`;
+      
+      // Save the PDF
+      pdf.save(fileName);
+      
+      // Restore button text
+      if (downloadButton) {
+        downloadButton.textContent = originalButtonText || 'Download PDF';
+        downloadButton.disabled = false;
+      }
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.\n\nError: ' + error.message);
+      
+      // Restore button if error occurs
+      const downloadButton = document.querySelector('.download-pdf-btn');
+      if (downloadButton) {
+        downloadButton.textContent = 'Download PDF';
+        downloadButton.disabled = false;
+      }
+    }
+  };
+
   // Handle generate study schedule
   const handleGenerateSchedule = async () => {
     try {
@@ -1292,7 +1441,16 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end p-6 border-t border-gray-200 bg-gray-50">
+            <div className="flex justify-between p-6 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => downloadChapterSummary(summaryModal.data)}
+                className="download-pdf-btn px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                {t('chapters.downloadPdf')}
+              </button>
               <button
                 onClick={() => setSummaryModal({ show: false, data: null })}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"

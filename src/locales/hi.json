@@ -132,7 +132,8 @@
     "chapterSummary": "अध्याय {{number}} सारांश",
     "summary": "सारांश",
     "keyConcepts": "मुख्य अवधारणाएं",
-    "close": "बंद करें"
+    "close": "बंद करें",
+    "downloadPdf": "पीडीएफ डाउनलोड करें"
   },
   "about": {
     "title": "सहायक एआई के बारे में",
