@@ -200,5 +200,11 @@
     "keyConcepts": "Key Concepts",
     "close": "Close",
     "downloadPdf": "പിഡിഎഫ് ഡൗൺലോഡ് ചെയ്യുക"
+  },
+  "stats": {
+    "books": "ഡിജിറ്റൽ പുസ്തകങ്ങൾ",
+    "languages": "പിന്തുണയ്ക്കുന്ന ഭാഷകൾ",
+    "users": "ടെസ്റ്റ് ഉപയോക്താക്കൾ",
+    "satisfaction": "പ്രോജക്ട് ഘട്ടം"
   }
 }

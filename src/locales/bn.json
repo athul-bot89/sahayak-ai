@@ -200,5 +200,11 @@
     "keyConcepts": "Key Concepts",
     "close": "Close",
     "downloadPdf": "পিডিএফ ডাউনলোড করুন"
+  },
+  "stats": {
+    "books": "ডিজিটাল বই",
+    "languages": "সমর্থিত ভাষা",
+    "users": "পরীক্ষার্থী ব্যবহারকারী",
+    "satisfaction": "প্রকল্প পর্যায়"
   }
 }

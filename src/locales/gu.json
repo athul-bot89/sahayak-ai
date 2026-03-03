@@ -203,5 +203,11 @@
     "keyConcepts": "Key Concepts",
     "close": "Close",
     "downloadPdf": "પીડીએફ ડાઉનલોડ કરો"
+  },
+  "stats": {
+    "books": "ડિજિટલ પુસ્તકો",
+    "languages": "સમર્થિત ભાષાઓ",
+    "users": "ટેસ્ટ યૂઝર્સ",
+    "satisfaction": "પ્રોજેક્ટ તબક્કો"
   }
 }

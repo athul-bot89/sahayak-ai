@@ -199,6 +199,10 @@
     "summary": "Summary",
     "keyConcepts": "Key Concepts",
     "close": "Close",
-    "downloadPdf": "பிடிஎஃப் பதிவிறக்கம்"
-  }
+    "downloadPdf": "பிடிஎஃப் பதிவிறக்கம்"  },
+  "stats": {
+    "books": "டிஜிட்டல் புத்தகங்கள்",
+    "languages": "ஆதரிக்கப்படும் மொழிகள்",
+    "users": "சோதனை பயனர்கள்",
+    "satisfaction": "திட்ட கட்டம்"  }
 }

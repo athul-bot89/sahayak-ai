@@ -200,5 +200,11 @@
     "keyConcepts": "Key Concepts",
     "close": "Close",
     "downloadPdf": "పిడిఎఫ్ డౌన్‌లోడ్ చేయండి"
+  },
+  "stats": {
+    "books": "డిజిటల్ పుస్తకాలు",
+    "languages": "మద్దతు భాషలు",
+    "users": "పరీక్ష వినియోగదారులు",
+    "satisfaction": "ప్రాజెక్ట్ దశ"
   }
 }

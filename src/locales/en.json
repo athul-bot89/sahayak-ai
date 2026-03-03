@@ -203,5 +203,11 @@
   "footer": {
     "rights": "All rights reserved.",
     "tagline": "Empowering Education with AI"
+  },
+  "stats": {
+    "books": "Digital Books",
+    "languages": "Languages Supported",
+    "users": "Test Users",
+    "satisfaction": "Project Phase"
   }
 }

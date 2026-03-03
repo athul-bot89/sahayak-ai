@@ -200,5 +200,11 @@
     "keyConcepts": "Key Concepts",
     "close": "Close",
     "downloadPdf": "पीडीएफ डाउनलोड करा"
+  },
+  "stats": {
+    "books": "डिजिटल पुस्तके",
+    "languages": "समर्थित भाषा",
+    "users": "चाचणी वापरकर्ते",
+    "satisfaction": "प्रकल्प टप्पा"
   }
 }
