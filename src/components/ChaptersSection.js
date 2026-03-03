@@ -617,6 +617,226 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
     }
   };
 
+  // New function to generate PDF using html2canvas for proper multi-language support
+  const downloadScheduleAsPDF = async () => {
+    if (!scheduleResult) return;
+
+    try {
+      // Create a temporary container for the schedule content
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.width = '794px'; // A4 width in pixels at 96 DPI
+      container.style.padding = '40px';
+      container.style.backgroundColor = 'white';
+      container.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+      
+      // Build the HTML content with proper styling
+      container.innerHTML = `
+        <div style="font-family: inherit;">
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white;">
+            <h1 style="font-size: 28px; margin: 0; font-weight: bold;">${t('StudySchedule') || 'Your Study Schedule'}</h1>
+            
+          </div>
+
+          <!-- Book Title -->
+          <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 18px; font-weight: 600; color: #1f2937;">
+              ${t('chapters in') || 'Book'} --- ${book?.title || 'Textbook'}
+            </h2>
+          </div>
+
+          <!-- Conflicts Section -->
+          ${scheduleResult.conflicts && scheduleResult.conflicts.length > 0 ? `
+            <div style="margin-bottom: 20px; padding: 15px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
+              <h3 style="color: #dc2626; font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">
+                ⚠️ ${t('Scheduling Conflicts') || 'Scheduling Conflicts'}
+              </h3>
+              <ul style="margin: 0; padding-left: 20px; color: #991b1b;">
+                ${scheduleResult.conflicts.map(conflict => `
+                  <li style="margin: 5px 0;">${conflict}</li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+         
+
+          <!-- Schedule Overview -->
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 15px;">
+              ${t('chapters schedule Overview') || 'Schedule Overview'}
+            </h3>
+            <div style="display: flex; gap: 15px; justify-content: space-between;">
+              <div style="flex: 1; padding: 20px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 8px; text-align: center;">
+                <div style="font-size: 28px; font-weight: bold; color: #7c3aed;">${scheduleResult.total_chapters}</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">${t('chapters.totalChapters') || 'Total Chapters'}</div>
+              </div>
+              <div style="flex: 1; padding: 20px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; text-align: center;">
+                <div style="font-size: 28px; font-weight: bold; color: #16a34a;">
+                  ${scheduleResult.schedule?.reduce((sum, ch) => sum + (ch.estimated_study_days || 0), 0) || 0}
+                </div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">${t('totalStudyDays') || 'Total Study Days'}</div>
+              </div>
+              <div style="flex: 1; padding: 20px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; text-align: center;">
+                <div style="font-size: 28px; font-weight: bold; color: #2563eb;">
+                  ${scheduleResult.schedule?.[0]?.daily_hours || 0}
+                </div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">${t('hoursPerDay') || 'Hours/Day'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chapter Schedule -->
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 15px;">
+              ${t('chapter Schedule') || 'Chapter Schedule'}
+            </h3>
+            ${scheduleResult.schedule?.map((chapter, index) => `
+              <div style="margin-bottom: 15px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                  <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0;">
+                    ${index + 1}. ${chapter.chapter_name}
+                  </h4>
+                  <span style="padding: 4px 12px; background: ${
+                    chapter.priority === 'high' ? '#fee2e2' : 
+                    chapter.priority === 'medium' ? '#fef3c7' : 
+                    '#dcfce7'
+                  }; color: ${
+                    chapter.priority === 'high' ? '#991b1b' : 
+                    chapter.priority === 'medium' ? '#92400e' : 
+                    '#166534'
+                  }; border-radius: 4px; font-size: 12px; font-weight: 600;">
+                    ${(chapter.priority || 'medium').toUpperCase()}
+                  </span>
+                </div>
+                
+                <div style="margin-bottom: 10px; font-size: 14px; color: #6b7280;">
+                  📅 ${t('Start day') || 'Start'}: ${new Date(chapter.suggested_start_date).toLocaleDateString()} 
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  🎯 ${t('target day') || 'Target'}: ${new Date(chapter.target_completion_date).toLocaleDateString()}
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                  <div style="flex: 1; padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 12px; color: #6b7280;">${t('StudyDays') || 'Study Days'}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #1f2937; margin-top: 2px;">${chapter.estimated_study_days}</div>
+                  </div>
+                  <div style="flex: 1; padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 12px; color: #6b7280;">${t('Daily Hours') || 'Daily Hours'}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #1f2937; margin-top: 2px;">${chapter.daily_hours}</div>
+                  </div>
+                  <div style="flex: 1; padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 12px; color: #6b7280;">${t('Total Hours') || 'Total Hours'}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #1f2937; margin-top: 2px;">
+                      ${(chapter.estimated_study_days * chapter.daily_hours).toFixed(1)}
+                    </div>
+                  </div>
+                </div>
+                
+                ${chapter.study_tips && chapter.study_tips.length > 0 ? `
+                  <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb;">
+                    <div style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 8px;">
+                      ${t('study Tips') || 'Study Tips'}:
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                      ${chapter.study_tips.map(tip => `
+                        <span style="padding: 4px 8px; background: #eff6ff; color: #2563eb; border-radius: 4px; font-size: 11px;">
+                          ${tip}
+                        </span>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `).join('') || ''}
+          </div>
+
+          <!-- Weekly Breakdown -->
+          ${scheduleResult.weekly_breakdown && Object.keys(scheduleResult.weekly_breakdown).length > 0 ? `
+            <div style="margin-bottom: 30px;">
+              <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 15px;">
+                ${t('weekly Breakdown') || 'Weekly Breakdown'}
+              </h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                ${Object.entries(scheduleResult.weekly_breakdown).map(([week, chapters]) => `
+                  <div style="padding: 15px; background: linear-gradient(135deg, #faf5ff, #f3e8ff); border: 1px solid #e9d5ff; border-radius: 8px;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #7c3aed; margin: 0 0 10px 0;">
+                      ${week}
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 13px;">
+                      ${chapters.map(ch => `
+                        <li style="margin: 4px 0;">${ch}</li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Footer -->
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px;">
+            <p>${t('Generated By') || 'Generated by'} Sahayak AI - ${new Date().toLocaleDateString()}</p>
+          </div>
+        </div>
+      `;
+
+      // Add container to body
+      document.body.appendChild(container);
+
+      // Wait for fonts to load
+      await document.fonts.ready;
+
+      // Generate canvas from HTML
+      const canvas = await html2canvas(container, {
+        scale: 2, // Higher quality
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+
+      // Remove temporary container
+      document.body.removeChild(container);
+
+      // Convert canvas to PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Add additional pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Save PDF
+      const fileName = `study_schedule_${book?.title || 'textbook'}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert(t('chapters.pdfGenerationError') || 'Error generating PDF. Please try again.');
+    }
+  };
+
   // Download schedule function - Enhanced PDF generation with website-matching styles
   const downloadSchedule = (format = 'json') => {
     if (!scheduleResult) return;
@@ -635,343 +855,9 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       linkElement.setAttribute('download', exportFileDefaultName);
       linkElement.click();
     } else if (format === 'pdf') {
-      // Enhanced PDF generation with styled layout matching website
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'pt',
-        format: 'a4'
-      });
-      
-      const pageHeight = doc.internal.pageSize.height;
-      const pageWidth = doc.internal.pageSize.width;
-      let yPosition = 40;
-      let pageNumber = 1;
-      
-      // Design constants
-      const margin = {
-        left: 40,
-        right: 40,
-        top: 40,
-        bottom: 60
-      };
-      const maxWidth = pageWidth - margin.left - margin.right;
-      const colors = {
-        primary: { r: 79, g: 70, b: 229 }, // Indigo-600
-        success: { r: 34, g: 197, b: 94 }, // Green-600
-        warning: { r: 245, g: 158, b: 11 }, // Amber-600
-        danger: { r: 239, g: 68, b: 68 }, // Red-500
-        purple: { r: 147, g: 51, b: 234 }, // Purple-600
-        blue: { r: 37, g: 99, b: 235 }, // Blue-600
-        lightBg: { r: 249, g: 250, b: 251 }, // Gray-50
-        border: { r: 229, g: 231, b: 235 }, // Gray-200
-        text: { r: 31, g: 41, b: 55 }, // Gray-800
-        textLight: { r: 107, g: 114, b: 128 } // Gray-500
-      };
+      // Enhanced PDF generation using html2canvas for proper multi-language support
+      downloadScheduleAsPDF();
 
-      // Helper functions
-      const addWatermark = () => {
-        doc.setFontSize(60);
-        doc.setTextColor(200, 200, 200);
-        doc.setFont(undefined, 'bold');
-        doc.saveGraphicsState();
-        doc.setGState(new doc.GState({ opacity: 0.1 }));
-        // Center the watermark
-        const watermarkText = 'Sahayak AI';
-        const textWidth = doc.getTextWidth(watermarkText);
-        doc.text(watermarkText, (pageWidth - textWidth) / 2, pageHeight / 2, { angle: -45 });
-        doc.restoreGraphicsState();
-        doc.setTextColor(colors.text.r, colors.text.g, colors.text.b);
-      };
-
-      const addPageNumber = () => {
-        doc.setFontSize(9);
-        doc.setTextColor(colors.textLight.r, colors.textLight.g, colors.textLight.b);
-        doc.setFont(undefined, 'normal');
-        const pageText = `Page ${pageNumber}`;
-        doc.text(pageText, pageWidth / 2, pageHeight - 30, { align: 'center' });
-        doc.text(`Generated on ${new Date().toLocaleDateString()}`, margin.left, pageHeight - 30);
-        doc.setTextColor(colors.text.r, colors.text.g, colors.text.b);
-      };
-
-      const checkAndAddPage = (requiredSpace = 100) => {
-        if (yPosition + requiredSpace > pageHeight - margin.bottom) {
-          addPageNumber();
-          doc.addPage();
-          pageNumber++;
-          addWatermark();
-          yPosition = margin.top;
-          return true;
-        }
-        return false;
-      };
-
-      const addColoredBox = (x, y, width, height, color, opacity = 0.1) => {
-        doc.saveGraphicsState();
-        doc.setFillColor(color.r, color.g, color.b);
-        doc.setGState(new doc.GState({ opacity }));
-        doc.roundedRect(x, y, width, height, 6, 6, 'F');
-        doc.restoreGraphicsState();
-      };
-
-      const addBorder = (x, y, width, height, color = colors.border, lineWidth = 1) => {
-        doc.setDrawColor(color.r, color.g, color.b);
-        doc.setLineWidth(lineWidth);
-        doc.roundedRect(x, y, width, height, 6, 6, 'S');
-      };
-
-      const addStyledText = (text, x, y, fontSize = 11, fontStyle = 'normal', color = colors.text, options = {}) => {
-        doc.setFontSize(fontSize);
-        doc.setFont(undefined, fontStyle);
-        doc.setTextColor(color.r, color.g, color.b);
-        
-        if (options.maxWidth) {
-          const lines = doc.splitTextToSize(text, options.maxWidth);
-          let currentY = y;
-          lines.forEach(line => {
-            doc.text(line, x, currentY, options);
-            currentY += fontSize + 2;
-          });
-          return currentY - y;
-        } else {
-          doc.text(text, x, y, options);
-          return fontSize + 2;
-        }
-      };
-
-      // Start PDF generation
-      addWatermark();
-
-      // Header with gradient effect
-      addColoredBox(margin.left, yPosition, maxWidth, 80, colors.primary, 0.05);
-      addColoredBox(margin.left, yPosition, maxWidth, 80, colors.success, 0.03);
-      
-      // Title
-      yPosition += 30;
-      addStyledText('Your Study Schedule', pageWidth / 2, yPosition, 24, 'bold', colors.text, { align: 'center' });
-      yPosition += 25;
-      
-      // Date range
-      if (scheduleResult.start_date && scheduleResult.end_date) {
-        const dateText = `From ${new Date(scheduleResult.start_date).toLocaleDateString()} to ${new Date(scheduleResult.end_date).toLocaleDateString()}`;
-        addStyledText(dateText, pageWidth / 2, yPosition, 12, 'normal', colors.textLight, { align: 'center' });
-      }
-      yPosition += 35;
-
-      // Book title
-      addStyledText(`Book: ${book?.title || 'Textbook'}`, margin.left, yPosition, 13, 'bold');
-      yPosition += 25;
-
-      // Conflicts/Warnings Section
-      if (scheduleResult.conflicts && scheduleResult.conflicts.length > 0) {
-        checkAndAddPage(100 + scheduleResult.conflicts.length * 20);
-        
-        // Red warning box
-        const conflictHeight = 40 + scheduleResult.conflicts.length * 18;
-        addColoredBox(margin.left, yPosition, maxWidth, conflictHeight, colors.danger, 0.05);
-        addBorder(margin.left, yPosition, maxWidth, conflictHeight, { r: 252, g: 165, b: 165 });
-        
-        yPosition += 25;
-        addStyledText('⚠ Scheduling Conflicts', margin.left + 15, yPosition, 14, 'bold', colors.danger);
-        yPosition += 20;
-        
-        scheduleResult.conflicts.forEach(conflict => {
-          addStyledText(`• ${conflict}`, margin.left + 15, yPosition, 10, 'normal', colors.danger, { maxWidth: maxWidth - 30 });
-          yPosition += 18;
-        });
-        yPosition += 15;
-      }
-
-      // Recommendations Section  
-      if (scheduleResult.recommendations && scheduleResult.recommendations.length > 0) {
-        checkAndAddPage(100 + scheduleResult.recommendations.length * 20);
-        
-        // Blue info box
-        const recHeight = 40 + scheduleResult.recommendations.length * 18;
-        addColoredBox(margin.left, yPosition, maxWidth, recHeight, colors.blue, 0.05);
-        addBorder(margin.left, yPosition, maxWidth, recHeight, { r: 147, g: 197, b: 253 });
-        
-        yPosition += 25;
-        addStyledText('ⓘ Recommendations', margin.left + 15, yPosition, 14, 'bold', colors.blue);
-        yPosition += 20;
-        
-        scheduleResult.recommendations.forEach(rec => {
-          addStyledText(`• ${rec}`, margin.left + 15, yPosition, 10, 'normal', colors.blue, { maxWidth: maxWidth - 30 });
-          yPosition += 18;
-        });
-        yPosition += 15;
-      }
-
-      // Schedule Overview Section
-      checkAndAddPage(180);
-      addStyledText('Schedule Overview', margin.left, yPosition, 18, 'bold');
-      yPosition += 30;
-
-      // Stats cards in grid
-      const cardWidth = (maxWidth - 20) / 3;
-      const cardHeight = 70;
-      
-      // Total Chapters card
-      addColoredBox(margin.left, yPosition, cardWidth, cardHeight, colors.purple, 0.1);
-      addBorder(margin.left, yPosition, cardWidth, cardHeight, colors.purple, 0.5);
-      addStyledText(String(scheduleResult.total_chapters), margin.left + cardWidth/2, yPosition + 35, 24, 'bold', colors.purple, { align: 'center' });
-      addStyledText('Total Chapters', margin.left + cardWidth/2, yPosition + 55, 11, 'normal', colors.textLight, { align: 'center' });
-      
-      // Total Study Days card
-      const totalDays = scheduleResult.schedule?.reduce((sum, ch) => sum + (ch.estimated_study_days || 0), 0) || 0;
-      addColoredBox(margin.left + cardWidth + 10, yPosition, cardWidth, cardHeight, colors.success, 0.1);
-      addBorder(margin.left + cardWidth + 10, yPosition, cardWidth, cardHeight, colors.success, 0.5);
-      addStyledText(String(totalDays), margin.left + cardWidth + 10 + cardWidth/2, yPosition + 35, 24, 'bold', colors.success, { align: 'center' });
-      addStyledText('Total Study Days', margin.left + cardWidth + 10 + cardWidth/2, yPosition + 55, 11, 'normal', colors.textLight, { align: 'center' });
-      
-      // Hours per Day card
-      const hoursPerDay = scheduleResult.schedule?.[0]?.daily_hours || 0;
-      addColoredBox(margin.left + (cardWidth + 10) * 2, yPosition, cardWidth, cardHeight, colors.blue, 0.1);
-      addBorder(margin.left + (cardWidth + 10) * 2, yPosition, cardWidth, cardHeight, colors.blue, 0.5);
-      addStyledText(String(hoursPerDay), margin.left + (cardWidth + 10) * 2 + cardWidth/2, yPosition + 35, 24, 'bold', colors.blue, { align: 'center' });
-      addStyledText('Hours/Day', margin.left + (cardWidth + 10) * 2 + cardWidth/2, yPosition + 55, 11, 'normal', colors.textLight, { align: 'center' });
-      
-      yPosition += cardHeight + 30;
-
-      // Chapter Schedule Cards
-      checkAndAddPage(50);
-      addStyledText('Chapter Schedule', margin.left, yPosition, 18, 'bold');
-      yPosition += 25;
-
-      scheduleResult.schedule?.forEach((chapter, index) => {
-        checkAndAddPage(140);
-        
-        // Chapter card with border
-        const chapterCardHeight = 120 + (chapter.study_tips?.length > 0 ? 30 : 0);
-        addColoredBox(margin.left, yPosition, maxWidth, chapterCardHeight, colors.lightBg, 0.3);
-        addBorder(margin.left, yPosition, maxWidth, chapterCardHeight);
-        
-        // Chapter name and priority badge
-        yPosition += 20;
-        addStyledText(`${index + 1}. ${chapter.chapter_name}`, margin.left + 15, yPosition, 13, 'bold');
-        
-        // Priority badge
-        const priorityColors = {
-          high: colors.danger,
-          medium: colors.warning,
-          low: colors.success
-        };
-        const priorityColor = priorityColors[chapter.priority] || colors.textLight;
-        const badgeX = pageWidth - margin.right - 80;
-        addColoredBox(badgeX, yPosition - 12, 70, 20, priorityColor, 0.2);
-        addStyledText(chapter.priority?.toUpperCase() || 'MEDIUM', badgeX + 35, yPosition, 9, 'bold', priorityColor, { align: 'center' });
-        
-        yPosition += 25;
-        
-        // Date information
-        addStyledText(`📅 Start: ${new Date(chapter.suggested_start_date).toLocaleDateString()}`, margin.left + 15, yPosition, 10, 'normal', colors.textLight);
-        addStyledText(`🎯 Target: ${new Date(chapter.target_completion_date).toLocaleDateString()}`, margin.left + 200, yPosition, 10, 'normal', colors.textLight);
-        yPosition += 20;
-        
-        // Stats in grid
-        const statWidth = (maxWidth - 45) / 3;
-        const statY = yPosition;
-        
-        // Study Days box
-        addColoredBox(margin.left + 15, statY, statWidth, 35, colors.lightBg, 0.5);
-        addStyledText('Study Days', margin.left + 15 + statWidth/2, statY + 12, 9, 'normal', colors.textLight, { align: 'center' });
-        addStyledText(String(chapter.estimated_study_days), margin.left + 15 + statWidth/2, statY + 25, 12, 'bold', colors.text, { align: 'center' });
-        
-        // Daily Hours box
-        addColoredBox(margin.left + 15 + statWidth + 5, statY, statWidth, 35, colors.lightBg, 0.5);
-        addStyledText('Daily Hours', margin.left + 15 + statWidth + 5 + statWidth/2, statY + 12, 9, 'normal', colors.textLight, { align: 'center' });
-        addStyledText(String(chapter.daily_hours), margin.left + 15 + statWidth + 5 + statWidth/2, statY + 25, 12, 'bold', colors.text, { align: 'center' });
-        
-        // Total Hours box
-        const totalHours = (chapter.estimated_study_days * chapter.daily_hours).toFixed(1);
-        addColoredBox(margin.left + 15 + (statWidth + 5) * 2, statY, statWidth, 35, colors.lightBg, 0.5);
-        addStyledText('Total Hours', margin.left + 15 + (statWidth + 5) * 2 + statWidth/2, statY + 12, 9, 'normal', colors.textLight, { align: 'center' });
-        addStyledText(totalHours, margin.left + 15 + (statWidth + 5) * 2 + statWidth/2, statY + 25, 12, 'bold', colors.text, { align: 'center' });
-        
-        yPosition += 45;
-        
-        // Study Tips
-        if (chapter.study_tips && chapter.study_tips.length > 0) {
-          doc.setDrawColor(colors.border.r, colors.border.g, colors.border.b);
-          doc.setLineWidth(0.5);
-          doc.line(margin.left + 15, yPosition, pageWidth - margin.right - 15, yPosition);
-          yPosition += 10;
-          
-          addStyledText('Study Tips:', margin.left + 15, yPosition, 9, 'bold', colors.textLight);
-          yPosition += 12;
-          
-          const tipsPerRow = 3;
-          const tipWidth = (maxWidth - 30) / tipsPerRow - 5;
-          chapter.study_tips.forEach((tip, tipIndex) => {
-            const col = tipIndex % tipsPerRow;
-            const tipX = margin.left + 15 + (tipWidth + 5) * col;
-            
-            addColoredBox(tipX, yPosition - 10, tipWidth, 18, colors.blue, 0.1);
-            addStyledText(tip, tipX + 5, yPosition, 8, 'normal', colors.blue, { maxWidth: tipWidth - 10 });
-            
-            if (col === tipsPerRow - 1) {
-              yPosition += 20;
-            }
-          });
-          
-          if (chapter.study_tips.length % tipsPerRow !== 0) {
-            yPosition += 20;
-          }
-        }
-        
-        yPosition += 15;
-      });
-
-      // Weekly Breakdown
-      if (scheduleResult.weekly_breakdown && Object.keys(scheduleResult.weekly_breakdown).length > 0) {
-        checkAndAddPage(200);
-        yPosition += 20;
-        addStyledText('Weekly Breakdown', margin.left, yPosition, 18, 'bold');
-        yPosition += 25;
-        
-        const weekEntries = Object.entries(scheduleResult.weekly_breakdown);
-        const colWidth = (maxWidth - 10) / 2;
-        let col = 0;
-        let rowY = yPosition;
-        
-        weekEntries.forEach(([week, chapters], index) => {
-          const boxX = margin.left + (colWidth + 10) * col;
-          const chapterHeight = 40 + chapters.length * 15;
-          
-          // Week box with gradient effect
-          addColoredBox(boxX, rowY, colWidth, chapterHeight, colors.purple, 0.05);
-          addColoredBox(boxX, rowY, colWidth, chapterHeight, colors.primary, 0.03);
-          addBorder(boxX, rowY, colWidth, chapterHeight, { r: 196, g: 181, b: 253 });
-          
-          addStyledText(week, boxX + 10, rowY + 20, 12, 'bold', colors.purple);
-          
-          let chapterY = rowY + 35;
-          chapters.forEach(ch => {
-            addStyledText(`• ${ch}`, boxX + 10, chapterY, 9, 'normal', colors.text, { maxWidth: colWidth - 20 });
-            chapterY += 15;
-          });
-          
-          col++;
-          if (col === 2) {
-            col = 0;
-            rowY += chapterHeight + 10;
-            if (index < weekEntries.length - 1) {
-              checkAndAddPage(chapterHeight + 20);
-            }
-          }
-        });
-        
-        if (col === 1) {
-          yPosition = rowY + 100;
-        } else {
-          yPosition = rowY;
-        }
-      }
-
-      // Add final page number
-      addPageNumber();
-      
-      // Save the PDF
-      doc.save(`${fileName}.pdf`);
     } else if (format === 'text') {
       // Download as formatted text
       let textContent = `STUDY SCHEDULE\n`;

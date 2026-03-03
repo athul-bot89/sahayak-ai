@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PDF Generation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <h1>Test PDF Generation</h1>
+    <button onclick="generatePDF()">Generate PDF</button>
+    
+    <div id="content" style="display:none;">
+        <h2>Test Schedule</h2>
+        <p>This is a test schedule with Unicode text:</p>
+        <ul>
+            <li>English: Hello World</li>
+            <li>Hindi: नमस्ते दुनिया</li>
+            <li>Bengali: হ্যালো বিশ্ব</li>
+            <li>Tamil: வணக்கம் உலகம்</li>
+        </ul>
+    </div>
+
+    <script>
+        function generatePDF() {
+            const content = document.getElementById('content');
+            content.style.display = 'block';
+            content.style.width = '794px';
+            content.style.padding = '40px';
+            content.style.backgroundColor = 'white';
+            
+            html2canvas(content, {
+                scale: 2,
+                useCORS: true,
+                logging: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgWidth = 210;
+                const pageHeight = 297;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                doc.addImage(
+                    canvas.toDataURL('image/png'),
+                    'PNG',
+                    0,
+                    0,
+                    imgWidth,
+                    imgHeight
+                );
+                
+                doc.save('test.pdf');
+                content.style.display = 'none';
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error generating PDF: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
