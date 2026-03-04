@@ -31,6 +31,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const [worksheetSettings, setWorksheetSettings] = useState({ numQuestions: 10 });
   const [showWorksheetSettings, setShowWorksheetSettings] = useState(false);
   const [selectedChapterForWorksheet, setSelectedChapterForWorksheet] = useState(null);
+  const [generatedWorksheets, setGeneratedWorksheets] = useState({}); // Track which chapters have generated worksheets
   
   // Chat state management
   const [showChatModal, setShowChatModal] = useState(false);
@@ -388,6 +389,178 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
     }
   };
 
+  // Download worksheet as PDF using html2canvas for multi-language support
+  const downloadWorksheetAsPDF = async (worksheetData) => {
+    if (!worksheetData) return;
+
+    try {
+      // Create a temporary container for the worksheet content
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.width = '794px'; // A4 width in pixels at 96 DPI
+      container.style.padding = '40px';
+      container.style.backgroundColor = 'white';
+      container.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+      
+      // Build the HTML content with proper styling
+      container.innerHTML = `
+        <div style="font-family: inherit;">
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white;">
+            <h1 style="font-size: 28px; margin: 0; font-weight: bold;">${t('Worksheet') || 'Worksheet'}</h1>
+            <div style="margin-top: 10px; font-size: 16px; opacity: 0.95;">
+              ${t('Chapter')} ${worksheetData.chapterNumber}: ${worksheetData.chapterTitle}
+            </div>
+          </div>
+
+          <!-- Questions Section -->
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 20px;">
+              ${t('Questions') || 'Questions'} (${worksheetData.totalQuestions})
+            </h3>
+            
+            ${worksheetData.questions?.map((q, index) => `
+              <div style="margin-bottom: 25px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
+                <!-- Question Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0;">
+                    ${t('Question')} ${index + 1}
+                  </h4>
+                  <div style="display: flex; gap: 8px;">
+                    <span style="padding: 4px 10px; background: ${
+                      q.difficulty === 'hard' ? '#fee2e2' : 
+                      q.difficulty === 'medium' ? '#fef3c7' : 
+                      '#dcfce7'
+                    }; color: ${
+                      q.difficulty === 'hard' ? '#991b1b' : 
+                      q.difficulty === 'medium' ? '#92400e' : 
+                      '#166534'
+                    }; border-radius: 4px; font-size: 12px; font-weight: 600;">
+                      ${(q.difficulty || 'medium').toUpperCase()}
+                    </span>
+                    <span style="padding: 4px 10px; background: #dbeafe; color: #1e40af; border-radius: 4px; font-size: 12px; font-weight: 600;">
+                      ${(q.question_type || q.type || 'multiple_choice').split('_').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(' ')}
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- Question Text -->
+                <div style="margin-bottom: 15px; font-size: 15px; line-height: 1.6; color: #374151;">
+                  ${q.question}
+                </div>
+                
+                <!-- Options for MCQ -->
+                ${(q.question_type === 'multiple_choice' || q.type === 'mcq') && q.options ? `
+                  <div style="margin-bottom: 15px;">
+                    ${q.options.map((option, optIndex) => `
+                      <div style="margin: 8px 0; padding: 12px; background: white; border: 1px solid #d1d5db; border-radius: 6px; display: flex; align-items: center;">
+                        <span style="width: 24px; height: 24px; border: 2px solid #6b7280; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; font-weight: 600; color: #6b7280; font-size: 12px;">
+                          ${String.fromCharCode(65 + optIndex)}
+                        </span>
+                        <span style="color: #374151; font-size: 14px;">${option}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+                
+                <!-- Answer Space for other types -->
+                ${(q.question_type !== 'multiple_choice' && q.type !== 'mcq') ? `
+                  <div style="margin-top: 15px; padding: 15px; background: white; border: 1px dashed #9ca3af; border-radius: 6px; min-height: ${(q.question_type === 'short_answer' || q.type === 'short') ? '60px' : '120px'};">
+                    <div style="color: #9ca3af; font-size: 12px; font-style: italic;">
+                      ${t('Write your answer here') || 'Write your answer here...'}
+                    </div>
+                  </div>
+                ` : ''}
+                
+                <!-- Answer Key -->
+                <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 6px;">
+                  <div style="font-size: 12px; font-weight: 600; color: #166534; margin-bottom: 6px;">
+                    ${t('Answer') || 'Answer'}:
+                  </div>
+                  <div style="font-size: 14px; color: #15803d; line-height: 1.5;">
+                    ${q.correct_answer || q.answer || 'Not provided'}
+                  </div>
+                </div>
+                
+                <!-- Explanation if available -->
+                ${q.explanation ? `
+                  <div style="margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd; border-radius: 6px;">
+                    <div style="font-size: 12px; font-weight: 600; color: #1e40af; margin-bottom: 6px;">
+                      ${t('Explanation') || 'Explanation'}:
+                    </div>
+                    <div style="font-size: 13px; color: #1e3a8a; line-height: 1.5;">
+                      ${q.explanation}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `).join('') || ''}
+          </div>
+
+          <!-- Footer -->
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px;">
+            <p>${t('Generated By') || 'Generated by'} Sahayak AI - ${new Date(worksheetData.generatedAt || new Date()).toLocaleDateString()}</p>
+          </div>
+        </div>
+      `;
+
+      // Add container to body
+      document.body.appendChild(container);
+
+      // Wait for fonts to load
+      await document.fonts.ready;
+
+      // Generate canvas from HTML
+      const canvas = await html2canvas(container, {
+        scale: 2, // Higher quality
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+
+      // Remove temporary container
+      document.body.removeChild(container);
+
+      // Convert canvas to PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Add additional pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Save PDF
+      const fileName = `worksheet_chapter_${worksheetData.chapterNumber}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating worksheet PDF:', error);
+      alert(t('chapters.pdfGenerationError') || 'Error generating PDF. Please try again.');
+    }
+  };
+
   // Handle generate worksheet
   // Handle opening chat for a chapter
   const handleOpenChat = (chapter) => {
@@ -505,12 +678,18 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
     }
   };
 
-  const handleGenerateWorksheet = async (chapter, numQuestions = 10) => {
+  const handleGenerateWorksheet = async (chapter, numQuestions = 10, forceRegenerate = false) => {
     try {
       setGeneratingWorksheet(prev => ({ ...prev, [chapter.id]: true }));
       
+      // Build URL with regenerate parameter if needed
+      let url = `http://localhost:8000/api/v1/chapters/${chapter.id}/generate-worksheet?num_questions=${numQuestions}`;
+      if (forceRegenerate) {
+        url += '&regenerate=true';
+      }
+      
       const response = await fetch(
-        `http://localhost:8000/api/v1/chapters/${chapter.id}/generate-worksheet?num_questions=${numQuestions}`,
+        url,
         {
           method: 'POST',
           headers: {
@@ -526,6 +705,9 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
 
       const result = await response.json();
       console.log('Worksheet generated successfully:', result);
+      
+      // Track that this chapter has a generated worksheet
+      setGeneratedWorksheets(prev => ({ ...prev, [chapter.id]: true }));
 
       // Show the worksheet in a modal
       setWorksheetModal({
@@ -1512,6 +1694,14 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                     <strong>Note:</strong> The worksheet will be generated based on the chapter content. Questions will vary in difficulty (Easy, Medium, Hard) and type.
                   </p>
                 </div>
+
+                {generatedWorksheets[selectedChapterForWorksheet.id] && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs text-blue-800">
+                      <strong>✓ Cached worksheet available:</strong> A worksheet has already been generated for this chapter. You can view the cached version instantly or generate a new one with different questions.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1525,9 +1715,25 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
               >
                 Cancel
               </button>
+              {generatedWorksheets[selectedChapterForWorksheet.id] && (
+                <button
+                  onClick={() => {
+                    handleGenerateWorksheet(selectedChapterForWorksheet, worksheetSettings.numQuestions, false);
+                    setShowWorksheetSettings(false);
+                    setSelectedChapterForWorksheet(null);
+                  }}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  View Cached
+                </button>
+              )}
               <button
                 onClick={() => {
-                  handleGenerateWorksheet(selectedChapterForWorksheet, worksheetSettings.numQuestions);
+                  handleGenerateWorksheet(selectedChapterForWorksheet, worksheetSettings.numQuestions, generatedWorksheets[selectedChapterForWorksheet.id] ? true : false);
                   setShowWorksheetSettings(false);
                   setSelectedChapterForWorksheet(null);
                 }}
@@ -1536,7 +1742,7 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
-                Generate Worksheet
+                {generatedWorksheets[selectedChapterForWorksheet.id] ? 'Generate New' : 'Generate Worksheet'}
               </button>
             </div>
           </div>
@@ -1808,16 +2014,13 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
             {/* Modal Footer */}
             <div className="flex justify-between items-center p-6 border-t border-gray-200 bg-gray-50">
               <button
-                onClick={() => {
-                  // Export to PDF or print functionality can be added here
-                  window.print();
-                }}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center"
+                onClick={() => downloadWorksheetAsPDF(worksheetModal.data)}
+                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg flex items-center"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Print Worksheet
+                {t('chapters.downloadPDF') || 'Download PDF'}
               </button>
               <button
                 onClick={() => setWorksheetModal({ show: false, data: null })}
@@ -2265,29 +2468,84 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                             )}
                           </button>
                         )}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedChapterForWorksheet(chapter);
-                            setShowWorksheetSettings(true);
-                          }}
-                          disabled={generatingWorksheet[chapter.id]}
-                          className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {generatingWorksheet[chapter.id] ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                              Generating...
-                            </>
-                          ) : (
-                            <>
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                              </svg>
-                              Generate Worksheet
-                            </>
-                          )}
-                        </button>
+                        {/* Worksheet Buttons */}
+                        {!generatedWorksheets[chapter.id] ? (
+                          // Show single generate button if worksheet not yet generated
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedChapterForWorksheet(chapter);
+                              setShowWorksheetSettings(true);
+                            }}
+                            disabled={generatingWorksheet[chapter.id]}
+                            className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {generatingWorksheet[chapter.id] ? (
+                              <>
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                                Generating...
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                                Generate Worksheet
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          // Show view and regenerate buttons if worksheet exists
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Get cached worksheet (without regenerate flag)
+                                handleGenerateWorksheet(chapter, 10, false);
+                              }}
+                              disabled={generatingWorksheet[chapter.id]}
+                              className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {generatingWorksheet[chapter.id] ? (
+                                <>
+                                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                                  Loading...
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                  </svg>
+                                  View Worksheet
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Force regenerate with new questions
+                                handleGenerateWorksheet(chapter, 10, true);
+                              }}
+                              disabled={generatingWorksheet[chapter.id]}
+                              className="px-3 py-1 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Generate a new worksheet with different questions"
+                            >
+                              {generatingWorksheet[chapter.id] ? (
+                                <>
+                                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                                  Regenerating...
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                  </svg>
+                                  New Worksheet
+                                </>
+                              )}
+                            </button>
+                          </>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
