@@ -2396,18 +2396,6 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                             </>
                           )}
                         </button>
-                        {(chapterDetails[chapter.id]?.has_pdf ?? chapter.has_pdf) && chapterDetails[chapter.id]?.pdf_path && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Download chapter PDF using the pdf_path from API
-                              window.open(`http://localhost:8000/${chapterDetails[chapter.id].pdf_path}`, '_blank');
-                            }}
-                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                          >
-                            Download Chapter PDF
-                          </button>
-                        )}
                         {(chapterDetails[chapter.id]?.has_text ?? chapter.has_text) && (
                           <button
                             onClick={(e) => {
