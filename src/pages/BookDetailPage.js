@@ -100,6 +100,68 @@ const BookDetailPage = () => {
     });
   };
 
+  // Helper function to download PDF with proper error handling
+  const downloadPDF = async () => {
+    try {
+      console.log('Starting PDF download for textbook:', id);
+      
+      // Method 1: Try direct API download
+      const response = await fetch(`http://localhost:8000/api/v1/textbooks/${id}/pdf`, {
+        method: 'GET',
+        headers: { 
+          'Accept': 'application/pdf'
+        }
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers.get('content-type'));
+      
+      if (!response.ok) {
+        // Try alternative download method using window.open
+        console.log('Direct download failed, trying alternative method...');
+        const downloadUrl = `http://localhost:8000/api/v1/textbooks/${id}/pdf`;
+        window.open(downloadUrl, '_blank');
+        return;
+      }
+      
+      const blob = await response.blob();
+      console.log('Blob size:', blob.size, 'bytes');
+      console.log('Blob type:', blob.type);
+      
+      if (blob.size === 0) {
+        throw new Error('Downloaded file is empty');
+      }
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${book.title?.replace(/[^a-zA-Z0-9]/g, '_') || 'textbook'}_${id}.pdf`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+      
+      console.log('PDF downloaded successfully');
+    } catch (err) {
+      console.error('Download error:', err);
+      
+      // Fallback: Try opening in new tab
+      const fallbackUrl = `http://localhost:8000/api/v1/textbooks/${id}/pdf`;
+      console.log('Attempting fallback download via new tab...');
+      const newTab = window.open(fallbackUrl, '_blank');
+      
+      if (!newTab) {
+        alert(t('bookDetail.downloadFailed') || `Failed to download PDF: ${err.message}\n\nPlease check if pop-ups are blocked and try again.`);
+      }
+    }
+  };
+
   // Process TOC: Extract text, detect chapters, and create them
   const processTocAndCreateChapters = async (textbookId) => {
     try {
@@ -432,24 +494,25 @@ const BookDetailPage = () => {
               {/* Action Buttons */}
               <div className="mt-6 space-y-2">
                 <button 
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    const button = e.currentTarget;
+                    const originalContent = button.innerHTML;
+                    
                     try {
-                      const response = await fetch(`http://localhost:8000/api/v1/textbooks/${id}/pdf`, {
-                        headers: { 'accept': 'application/pdf' }
-                      });
-                      if (!response.ok) throw new Error('Failed to download PDF');
-                      const blob = await response.blob();
-                      const url = URL.createObjectURL(blob);
-                      const link = document.createElement('a');
-                      link.href = url;
-                      link.download = `${book.title || 'textbook'}.pdf`;
-                      link.click();
-                      URL.revokeObjectURL(url);
-                    } catch (err) {
-                      alert(t('bookDetail.downloadFailed', { error: err.message }));
+                      // Show loading state
+                      button.disabled = true;
+                      button.innerHTML = '<span class="animate-spin inline-block mr-2">⏳</span> Downloading...';
+                      
+                      // Call the download helper function
+                      await downloadPDF();
+                      
+                    } finally {
+                      // Always reset button state
+                      button.disabled = false;
+                      button.innerHTML = originalContent;
                     }
                   }}
-                  className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm font-medium">
+                  className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                   </svg>
