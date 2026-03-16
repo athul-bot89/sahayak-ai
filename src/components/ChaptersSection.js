@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import SimplePdfViewer from './SimplePdfViewer';
 import { jsPDF } from 'jspdf';
@@ -41,6 +41,12 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [chatError, setChatError] = useState(null);
   const [includeContext, setIncludeContext] = useState(true);
+
+  // Audio recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   // Study Schedule state management
   const [showScheduleModal, setShowScheduleModal] = useState(false);
@@ -642,6 +648,80 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
       setChatMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsSendingMessage(false);
+    }
+  };
+
+  // Handle starting audio recording
+  const handleStartRecording = async () => {
+    try {
+      setChatError(null);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        stream.getTracks().forEach(track => track.stop());
+        transcribeAudio(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+      setChatError('Could not access microphone. Please allow microphone permissions and try again.');
+    }
+  };
+
+  // Handle stopping audio recording
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  };
+
+  // Transcribe audio using OpenAI Whisper API
+  const transcribeAudio = async (audioBlob) => {
+    setIsTranscribing(true);
+    setChatError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');
+      formData.append('model', 'gpt-4o-transcribe');
+
+      const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || `Transcription failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.text) {
+        setCurrentMessage(prev => prev ? `${prev} ${data.text}` : data.text);
+      } else {
+        setChatError('No transcription text returned. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error transcribing audio:', err);
+      setChatError(`Transcription error: ${err.message}`);
+    } finally {
+      setIsTranscribing(false);
     }
   };
 
@@ -2728,13 +2808,47 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                       handleSendMessage();
                     }
                   }}
-                  placeholder="Type your question here..."
+                  placeholder={isRecording ? 'Recording... click stop to finish' : isTranscribing ? 'Transcribing audio...' : 'Type your question or use the mic...'}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isSendingMessage}
+                  disabled={isSendingMessage || isRecording || isTranscribing}
                 />
+                {/* Microphone / Stop Recording Button */}
+                {isTranscribing ? (
+                  <button
+                    disabled
+                    className="px-3 py-2 bg-gray-200 text-gray-500 rounded-lg flex items-center cursor-not-allowed"
+                    title="Transcribing audio..."
+                  >
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  </button>
+                ) : isRecording ? (
+                  <button
+                    onClick={handleStopRecording}
+                    className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors flex items-center border border-red-300"
+                    title="Stop recording"
+                  >
+                    <span className="relative flex h-5 w-5 items-center justify-center">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <svg className="relative w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                      </svg>
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleStartRecording}
+                    disabled={isSendingMessage}
+                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300"
+                    title="Record audio message"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                    </svg>
+                  </button>
+                )}
                 <button
                   onClick={handleSendMessage}
-                  disabled={!currentMessage.trim() || isSendingMessage}
+                  disabled={!currentMessage.trim() || isSendingMessage || isRecording || isTranscribing}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                   {isSendingMessage ? (
@@ -2753,7 +2867,13 @@ const ChaptersSection = ({ textbookId, book, onChapterClick }) => {
                 </button>
               </div>
               <div className="mt-2 text-xs text-gray-500">
-                Press Enter to send • The AI will use chapter content to provide accurate answers
+                {isRecording ? (
+                  <span className="text-red-500 font-medium">● Recording in progress — click the stop button when done</span>
+                ) : isTranscribing ? (
+                  <span className="text-blue-500 font-medium">Transcribing your audio...</span>
+                ) : (
+                  'Press Enter to send • Click the mic to use voice input • The AI will use chapter content to provide accurate answers'
+                )}
               </div>
             </div>
           </div>
